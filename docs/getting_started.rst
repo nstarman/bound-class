@@ -39,7 +39,7 @@ When the class is instantiated the method becomes bound:
 
     >>> ex = Example()
     >>> ex.method
-    <bound method Example.method of <bound_class.base.Example object at ...>>
+    <bound method Example.method of <__main__.Example object at ...>>
 
 |BoundClass| allows this to be extended this so that a class can be ``bound`` to
 another class. Remember that |BoundClass| is a baseclass, so the specific
@@ -47,6 +47,7 @@ implementation is determined by which subclass is used. As a quick example:
 
 .. code-block:: python
 
+    >>> from bound_class.base import BoundClass
     >>> class Example2:
     ...     @property
     ...     def attribute(self):
