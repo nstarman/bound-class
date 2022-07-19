@@ -38,8 +38,9 @@
   test = [
     "coverage[toml]",
     "pytest",
-    "pytest-doctestplus",
     "pytest-astropy-header",
+    "pytest-cov",
+    "pytest-doctestplus",
   ]
   docs = [
     "IPython",
@@ -136,31 +137,29 @@
     "ignore:distutils Version classes are deprecated. Use packaging.version instead."
   ]
 
-[tool.coverage]
 
-  [[tool.coverage.run]]
-    omit = [
-      "*/bound_class/conftest.py",
-      "*/bound_class/*setup_package*",
-      "*/bound_class/tests/*",
-      "*/bound_class/*/tests/*",
-      "*/bound_class/extern/*",
-      "*/bound_class/_version*",
-    ]
+[tool.coverage.run]
+  omit = [
+    "*/bound_class/conftest.py",
+    "*/bound_class/*setup_package*",
+    "*/bound_class/tests/*",
+    "*/bound_class/*/tests/*",
+    "*/bound_class/_version*",
+  ]
 
-  [[tool.coverage.report]]
-    exclude_lines = [
-      # Have to re-enable the standard pragma
-      "pragma: no cover",
-      # Don't complain about packages we have installed
-      "except ImportError",
-      # Don't complain if tests don't hit assertions
-      "raise AssertionError",
-      "raise NotImplementedError",
-      # Don't complain about script hooks
-      "'def main(.*):'",
-      # Ignore branches that don't pertain to this version of Python
-      "pragma: py{ignore_python_version}",
-      # Don't complain about IPython completion helper
-      "def _ipython_key_completions_",
-    ]
+[tool.coverage.report]
+  exclude_lines = [
+    # Have to re-enable the standard pragma
+    "pragma: no cover",
+    # Don't complain about packages we have installed
+    "except ImportError",
+    # Don't complain if tests don't hit assertions
+    "raise AssertionError",
+    "raise NotImplementedError",
+    # Don't complain about script hooks
+    "'def main(.*):'",
+    # Ignore branches that don't pertain to this version of Python
+    "pragma: py{ignore_python_version}",
+    # Don't complain about IPython completion helper
+    "def _ipython_key_completions_",
+  ]
