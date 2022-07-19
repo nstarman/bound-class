@@ -39,6 +39,7 @@
     "coverage[toml]",
     "pytest",
     "pytest-doctestplus",
+    "pytest-astropy-header",
   ]
   docs = [
     "IPython",
@@ -126,7 +127,7 @@
   astropy_header = "True"
   doctest_plus = "enabled"
   text_file_format = "rst"
-  addopts = "--doctest-rst --ignore-glob=docs/papers_and_presentations/*"
+  addopts = "--doctest-rst"
   filterwarnings = [
     # tomlkit
     "ignore:The config value `project' has type `String', defaults to `str'.",
