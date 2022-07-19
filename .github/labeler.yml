@@ -1,0 +1,33 @@
+Docs:
+  - docs/*
+  - docs/_static/*
+  - docs/_templates/*
+  - docs/whatsnew/*
+  - .mailmap
+  - readthedocs.yml
+  - any: ['*.rst', '!CHANGES.rst']
+
+testing:
+  - codecov.yml
+  - conftest.py
+  - '**/conftest.py'
+  - tox.ini
+  - .github/**/*.yml
+  - .pep8speaks.yml
+
+external:
+  - astropy/extern/**/*
+  - cextern/**/*
+
+installation:
+  - docs/install.rst
+  - pyproject.toml
+  - setup.*
+
+Release:
+  - docs/development/releasing.rst
+
+base:
+  - src/bound_class/base.py
+  - src/bound_class/tests/test_base.py
+  - docs/src/base.rst

@@ -38,6 +38,7 @@
   test = [
     "coverage[toml]",
     "pytest",
+    "pytest-doctestplus",
   ]
   docs = [
     "IPython",
