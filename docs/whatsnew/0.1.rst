@@ -1,0 +1,42 @@
+.. doctest-skip-all
+
+.. _whatsnew-0.1:
+
+*******************************
+What's New in bound-class v0.1?
+*******************************
+
+Overview
+========
+
+``bound-class`` 0.1 is the initial release with all-new functionality
+(some of which is described below).
+
+This release includes (among other things):
+
+* :ref:`whatsnew-0.1-baseclass`
+
+
+.. _whatsnew-0.1-baseclass:
+
+The Base Class
+==============
+
+|BoundClass| extends the concept of a bound methods so that a class can be
+``bound`` to the instance of another class. Remember that |BoundClass| is a
+baseclass, so the specific implementation is determined by which subclass is
+used. As a quick example:
+
+.. code-block:: python
+
+    >>> class Example2:
+    ...     @property
+    ...     def attribute(self):
+    ...         bcb = BoundClass()
+    ...         bcb.__self__ = self
+    ...         return bcb
+    >>> ex2 = Example2()
+    >>> ex2.attribute
+    <bound_class.base.BoundClass object at ...>
+    >>> ex2.attribute.__self__ is ex2
+    True
