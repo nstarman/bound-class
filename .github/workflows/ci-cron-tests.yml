@@ -1,4 +1,4 @@
-name: Cron tests
+name: Cron CI
 
 on:
   schedule:
