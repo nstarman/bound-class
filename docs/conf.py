@@ -12,7 +12,7 @@ import tomlkit
 docs_root = pathlib.Path(__file__).parent.parent / "pyproject.toml"
 with docs_root.open() as f:
     toml = tomlkit.load(f)
-setup_cfg = dict(toml["project"])  # type: ignore
+setup_cfg = dict(toml["project"])
 
 
 # -- General configuration ----------------------------------------------------
@@ -70,7 +70,7 @@ todo_include_todos = True
 
 # This does not *have* to match the package name, but typically does
 project = str(setup_cfg["name"])
-author = ", ".join(d["name"] for d in setup_cfg["authors"])  # type: ignore
+author = ", ".join(d["name"] for d in setup_cfg["authors"])
 copyright = f"{datetime.datetime.now().year}, {author}"
 
 import_module(project)

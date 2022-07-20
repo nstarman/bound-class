@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 # LOCAL
-from . import base  # noqa: F401, TC002
+from . import base, descriptors  # noqa: F401, TC002
 from .setup_package import __version__  # noqa: F401, TC002
 
-__all__ = []
+__all__: list[str] = []
