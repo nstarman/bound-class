@@ -25,7 +25,7 @@ Self = TypeVar("Self")
 ##############################################################################
 
 
-class BoundClassRef(weakref.ref[BoundToType]):
+class BoundClassRef(weakref.ReferenceType[BoundToType]):
     """`weakref.ref` keeping a `BoundClass` connected to its referant.
 
     Notes
