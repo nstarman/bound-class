@@ -32,13 +32,8 @@ templates_path = ["_templates"]
 # source_suffix = ['.rst', '.md']
 source_suffix = ".rst"
 
-# Don't show summaries of the members in each class along with the
-# class' docstring
-numpydoc_show_class_members = True
-
-# Whether to create cross-references for the parameter types in the
-# Parameters, Other Parameters, Returns and Yields sections of the docstring.
-numpydoc_xref_param_type = True
+# Sphinx extensions
+extensions = ["sphinx_automodapi.automodapi"]
 
 autosummary_generate = True
 
@@ -60,11 +55,54 @@ rst_epilog = """
 
 # intersphinx
 intersphinx_mapping = {
-    "python": ("https://docs.python.org/3/", None),
+    "python": (
+        "https://docs.python.org/3/",
+        (None, "http://data.astropy.org/intersphinx/python3.inv"),
+    ),
 }
 
 # Show / hide TODO blocks
 todo_include_todos = True
+
+
+# -- NumpyDoc Configuration ------------------------
+
+# Don't show summaries of the members in each class along with the
+# class' docstring
+numpydoc_show_class_members = True
+
+# Whether to create cross-references for the parameter types in the
+# Parameters, Other Parameters, Returns and Yields sections of the docstring.
+numpydoc_xref_param_type = True
+
+# Words not to cross-reference. Most likely, these are common words used in
+# parameter type descriptions that may be confused for classes of the same
+# name. This can be overwritten or modified in packages and is provided here for
+# convenience.
+numpydoc_xref_ignore = {
+    "or",
+    "of",
+    "thereof",
+    "default",
+    "optional",
+    "keyword-only",
+    "instance",
+    "type",
+    "class",
+    "subclass",
+    "method",
+}
+
+# Mappings to fully qualified paths (or correct ReST references) for the
+# aliases/shortcuts used when specifying the types of parameters.
+# Numpy provides some defaults
+# https://github.com/numpy/numpydoc/blob/b352cd7635f2ea7748722f410a31f937d92545cc/numpydoc/xref.py#L62-L94
+numpydoc_xref_aliases = {
+    # Python terms
+    "function": ":term:`python:function`",
+    "iterator": ":term:`python:iterator`",
+    "mapping": ":term:`python:mapping`",
+}
 
 # -- Project information ------------------------------------------------------
 
@@ -80,6 +118,7 @@ package = sys.modules[project]
 version = package.__version__.split("-", 1)[0]
 # The full version, including alpha/beta/rc tags.
 release = package.__version__
+
 
 # -- Options for HTML output ---------------------------------------------------
 

@@ -4,21 +4,23 @@
 Bound-Class
 ***********
 
-``bound-class`` provides tools for creating classes that are bound to the instance of another class: like bound methods but as customizable as a class; like nested classes but better.
-What does this mean? It means it's not too hard to do
+``bound-class`` provides tools for creating classes that are bound to the
+instance of another class: like bound methods but more customizable and with
+their own methods; like nested classes but better. What does this mean? It means
+it's not too hard to do
 
 .. code-block:: python
 
    class BoundPlotter(...):
-      def histogram(self):
-         ...
+       def histogram(self):
+           ...
 
 
    @dataclass
    class DataClass:
-      data: DataFrame
+       data: DataFrame
 
-      plot = BoundPlotter()  # knows about DataClass
+       plot = BoundPlotter()  # bound to instances of DataClass
 
 
    mydata = DataClass(...)

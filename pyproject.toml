@@ -14,7 +14,7 @@
   description = "Classes bound to another class."
   readme = "README.rst"
   requires-python = ">=3.8"
-  license = {file = "licenses/LICENSE.rst"}
+  license = {file = "LICENSE"}
   keywords = ["python"]
   authors = [
     {name = "Nathaniel Starkman", email = "n.starkman@mail.utoronto.ca"}
