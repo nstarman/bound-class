@@ -51,3 +51,8 @@ class InstanceDescriptorBase(BoundClass[BoundToType]):
         """Make a copy of the descriptor."""
         descriptor = copy.copy(self)  # TODO? deepcopy
         return descriptor
+
+    @property
+    def enclosing(self) -> BoundToType:
+        """Return the enclosing instance to which this one is bound."""
+        return self.__self__
