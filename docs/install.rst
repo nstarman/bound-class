@@ -9,13 +9,17 @@ Installation
 With ``pip`` (recommended)
 ==========================
 
-To install the latest stable version using ``pip``, use::
+To install the latest stable version using ``pip``, use
+
+.. code-block:: bash
 
     python -m pip install bound_class
 
 This is the recommended way to install ``bound-class``.
 
-To install the development version::
+To install the development version
+
+.. code-block:: bash
 
     python -m pip install git+https://github.com/nstarman/bound-class
 
@@ -30,12 +34,16 @@ From Source: Cloning, Building, Installing
 ==========================================
 
 The latest development version of bound-class can be cloned from `GitHub
-<https://github.com/>`_ using ``git``::
+<https://github.com/>`_ using ``git``
+
+.. code-block:: bash
 
     git clone git://github.com/nstarman/bound-class.git
 
 To build and install the project (from the root of the source tree, e.g., inside
-the cloned ``bound-class`` directory)::
+the cloned ``bound-class`` directory)
+
+.. code-block:: bash
 
     python -m pip install .
 
