@@ -10,7 +10,7 @@ import sys
 import weakref
 from typing import Any, Callable, Generic, TypeVar
 
-__all__ = ["BoundClass"]
+__all__ = ["BoundClass", "BoundClassRef"]
 
 ##############################################################################
 # PARAMETERS
@@ -41,16 +41,20 @@ else:  # TODO! remove when py3.9+
 class BoundClassRef(ReferenceTypeShim[BoundToType]):
     """`weakref.ref` keeping a `BoundClass` connected to its referant.
 
+    Attributes
+    ----------
+    _bound_ref : `weakref.ReferenceType`[`BoundClass`]
+        A weak reference to a `bound_class.base.BoundClass` instance. See Notes for details.
+
     Notes
     -----
-    `weakref.ProxyType` autodetects and cleans up deletion of the referent,
-    which is great. However, unlike a dereferenced `weakref.ReferenceType`,
-    `~weakref.ProxyType` fails ``is`` and ``issubclass`` checks. To emulate the
-    auto-cleanup of `weakref.ProxyType`, this class adds a custom finalizer to
-    `~weakref.ReferenceType` that will clean up deletion of the referent on the
-    bound instance. It is therefore also necessary to store a weak reference
-    (using the base `weakref.ref`) to the bound object in the attribute
-    ``_bound_ref``.::
+    `weakref.ProxyType` autodetects and cleans up deletion of the referent.
+    However, unlike a dereferenced `weakref.ReferenceType`, `~weakref.ProxyType`
+    fails ``is`` and ``issubclass`` checks. To emulate the auto-cleanup of
+    `weakref.ProxyType`, this class adds a custom finalizer to
+    `~weakref.ReferenceType` that will clean the referent on the bound instance.
+    It is therefore also necessary to store a weak reference (using the base
+    `weakref.ref`) to the bound object in the attribute ``_bound_ref``.::
 
         bound object  --> BoundClassRef  --> referent
             ^------- ref <-----|
@@ -99,9 +103,9 @@ class BoundClass(Generic[BoundToType]):
 
     Notes
     -----
-    This class is modeled after methods on classes which have a ``__self__``
-    attribute when they are on an instance. Assigning ``self.__self__ = <X>`` is
-    left to subclasses.
+    This class is modeled after bound methods, which gain a ``__self__``
+    attribute when they are on an instance. As this is a base class, assigning
+    ``self.__self__ = <X>`` is left to subclasses.
 
     Examples
     --------
@@ -137,8 +141,9 @@ class BoundClass(Generic[BoundToType]):
         True
 
     Behind the scenes ``BoundClass`` uses :mod:`weakref` to ensure that classes
-    do not unexpectedly keep each other from being garbage collected. For
-    details of this implementation, see `bound_class.base.BoundClassRef`.
+    do not unexpectedly keep each other from being :external+python:ref:`garbage
+    collected`. For details of this implementation, see
+    `bound_class.base.BoundClassRef`.
 
         >>> attribute = ex2.attribute  # survives deletion
         >>> del ex2
@@ -178,7 +183,7 @@ class BoundClass(Generic[BoundToType]):
         # Note: we use ReferenceType over ProxyType b/c the latter fails ``is``
         # and ``issubclass`` checks. ProxyType autodetects and cleans up
         # deletion of the referent, which ReferenceType does not, so we need a
-        # custom BoundClassRef to emulate this behavior.
+        # custom ReferenceType subclass to emulate this behavior.
 
     @__self__.deleter
     def __self__(self) -> None:

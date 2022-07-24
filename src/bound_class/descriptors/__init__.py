@@ -1,5 +1,5 @@
 # LOCAL
-from .oninstance import InstanceDescriptor
-from .onlyinstance import InstanceOnlyDescriptor
+from .bound import BoundDescriptor
+from .instance import InstanceDescriptor
 
-__all__ = ["InstanceDescriptor", "InstanceOnlyDescriptor"]
+__all__ = ["BoundDescriptor", "InstanceDescriptor"]

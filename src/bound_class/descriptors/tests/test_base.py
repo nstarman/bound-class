@@ -5,14 +5,14 @@ from abc import ABCMeta, abstractmethod
 import pytest
 
 # LOCAL
-from bound_class.descriptors.base import InstanceDescriptorBase
+from bound_class.descriptors.base import BoundDescriptorBase
 
 
-class InstanceDescriptorBase_Test(metaclass=ABCMeta):
+class BoundDescriptorBase_Test(metaclass=ABCMeta):
     @pytest.fixture
     @abstractmethod
     def descriptor_cls(self) -> type:
-        return InstanceDescriptorBase
+        return BoundDescriptorBase
 
     @pytest.fixture
     def enclosing_attr(self) -> str:

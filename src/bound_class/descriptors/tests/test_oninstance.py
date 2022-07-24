@@ -4,14 +4,14 @@
 import pytest
 
 # LOCAL
-from .test_base import InstanceDescriptorBase_Test
-from bound_class.descriptors import InstanceDescriptor
+from .test_base import BoundDescriptorBase_Test
+from bound_class.descriptors import BoundDescriptor
 
 
-class Test_InstanceDescriptor(InstanceDescriptorBase_Test):
+class Test_BoundDescriptor(BoundDescriptorBase_Test):
     @pytest.fixture
     def descriptor_cls(self) -> type:
-        return InstanceDescriptor
+        return BoundDescriptor
 
     # ===============================================================
 
