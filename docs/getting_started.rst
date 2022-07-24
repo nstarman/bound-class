@@ -16,12 +16,8 @@ On this introductory page, we will demonstrate a few common use cases for
 ``bound-class`` and give an overview of the package functionality.
 
 
-Creating your first bound class
-===============================
-
-Stuff.
-
-:mod:`bound_class`
+What does 'bound' mean?
+=======================
 
 Methods on classes are unbound:
 
@@ -47,30 +43,20 @@ implementation is determined by which subclass is used. As a quick example:
 
 .. code-block:: python
 
-    >>> from bound_class.base import BoundClass
+    >>> from bound_class.descriptors import InstanceDescriptor
     >>> class Example2:
-    ...     @property
-    ...     def attribute(self):
-    ...         bcb = BoundClass()
-    ...         bcb.__self__ = self
-    ...         return bcb
+    ...     attribute = InstanceDescriptor()
     >>> ex2 = Example2()
     >>> ex2.attribute
-    <bound_class.base.BoundClass object at ...>
+    InstanceDescriptor()
     >>> ex2.attribute.__self__ is ex2
     True
 
-Behind the scenes |BoundClass| uses :mod:`weakref` to ensure that classes do not
-unexpectedly keep each other from being garbage collected. For details of this
-implementation, see :class:`~bound_class.base.BoundClassRef`.
 
-.. code-block:: python
+Making your first bound class
+=============================
 
-    >>> attribute = ex2.attribute  # survives deletion
-    >>> del ex2
-    >>> try: attribute.__self__
-    ... except ReferenceError: print("ex2 has been deleted")
-    ex2 has been deleted
+Documentation coming soon. This project is intended to be the base of a set of packages, to which this one will refer.
 
 
 What else can ``bound-class`` do?

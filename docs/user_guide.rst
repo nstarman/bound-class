@@ -13,6 +13,7 @@ treated like reference material.
     :maxdepth: 1
 
     src/base
+    src/descriptors
 
 
 Recent additions and changes
