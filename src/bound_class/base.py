@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 # STDLIB
+import sys
 import weakref
 from typing import Any, Callable, Generic, TypeVar
 
@@ -25,7 +26,19 @@ Self = TypeVar("Self")
 ##############################################################################
 
 
-class BoundClassRef(weakref.ReferenceType[BoundToType]):
+if sys.version_info >= (3, 9):
+
+    class ReferenceTypeShim(weakref.ReferenceType[BoundToType]):
+        pass
+
+else:  # TODO! remove when py3.9+
+
+    class ReferenceTypeShim(weakref.ReferenceType):
+        def __class_getitem__(cls, item):
+            return cls
+
+
+class BoundClassRef(ReferenceTypeShim[BoundToType]):
     """`weakref.ref` keeping a `BoundClass` connected to its referant.
 
     Notes
@@ -43,7 +56,7 @@ class BoundClassRef(weakref.ReferenceType[BoundToType]):
             ^------- ref <-----|
     """
 
-    __slots__ = ("_bound_ref", "__weakref__")
+    __slots__ = ("_bound_ref",)
 
     # `__new__` is needed for type hint tracing because the superclass defines `__new__` without `bound`.
     def __new__(
