@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from typing import NoReturn, overload
 
 # LOCAL
-from .base import BoundDescriptorBase, BoundToType
+from .base import BndTo, BoundDescriptorBase
 
 # from typing_extensions import Self  # TODO! use when mypy doesn't complain
 
@@ -23,7 +23,7 @@ __all__ = ["InstanceDescriptor"]
 
 
 @dataclass
-class InstanceDescriptor(BoundDescriptorBase[BoundToType]):
+class InstanceDescriptor(BoundDescriptorBase[BndTo]):
     """Descriptor stored on and accessess its enclosing instance.
 
     Examples
@@ -85,20 +85,18 @@ class InstanceDescriptor(BoundDescriptorBase[BoundToType]):
     """
 
     @overload
-    def __get__(
-        self: InstanceDescriptor[BoundToType], enclosing: BoundToType, enclosing_cls: None
-    ) -> InstanceDescriptor[BoundToType]:
+    def __get__(self: InstanceDescriptor[BndTo], enclosing: BndTo, enclosing_cls: None) -> InstanceDescriptor[BndTo]:
         ...
 
     @overload
-    def __get__(self, enclosing: None, enclosing_cls: type[BoundToType]) -> NoReturn:
+    def __get__(self, enclosing: None, enclosing_cls: type[BndTo]) -> NoReturn:
         ...
 
     def __get__(
-        self: InstanceDescriptor[BoundToType],
-        enclosing: BoundToType | None,
-        enclosing_cls: type[BoundToType] | None,
-    ) -> InstanceDescriptor[BoundToType] | NoReturn:
+        self: InstanceDescriptor[BndTo],
+        enclosing: BndTo | None,
+        enclosing_cls: type[BndTo] | None,
+    ) -> InstanceDescriptor[BndTo] | NoReturn:
         # When called without an instance, return self to allow access
         # to descriptor attributes.
         if enclosing is None:
@@ -118,5 +116,6 @@ class InstanceDescriptor(BoundDescriptorBase[BoundToType]):
         # We set `__self__` on every call, since if one makes copies of objs,
         # 'descriptor' will be copied as well, which will lose the reference.
         descriptor.__self__ = enclosing
+        # TODO? is it faster to check the reference then always make a new one.
 
         return descriptor

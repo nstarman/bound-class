@@ -15,7 +15,7 @@ __all__ = ["BoundClass", "BoundClassRef"]
 ##############################################################################
 # PARAMETERS
 
-BoundToType = TypeVar("BoundToType")
+BndTo = TypeVar("BndTo")
 
 Self = TypeVar("Self")
 # TODO ``from typing_extensions import Self`` when supported
@@ -28,7 +28,7 @@ Self = TypeVar("Self")
 
 if sys.version_info >= (3, 9):
 
-    class ReferenceTypeShim(weakref.ReferenceType[BoundToType]):
+    class ReferenceTypeShim(weakref.ReferenceType[BndTo]):
         pass
 
 else:  # TODO! remove when py3.9+
@@ -38,7 +38,7 @@ else:  # TODO! remove when py3.9+
             return cls
 
 
-class BoundClassRef(ReferenceTypeShim[BoundToType]):
+class BoundClassRef(ReferenceTypeShim[BndTo]):
     """`weakref.ref` keeping a `BoundClass` connected to its referant.
 
     Attributes
@@ -65,35 +65,35 @@ class BoundClassRef(ReferenceTypeShim[BoundToType]):
     # `__new__` is needed for type hint tracing because the superclass defines `__new__` without `bound`.
     def __new__(
         cls: type[Self],
-        ob: BoundToType,
-        callback: Callable[[weakref.ReferenceType[BoundToType]], Any] | None = None,
+        ob: BndTo,
+        callback: Callable[[weakref.ReferenceType[BndTo]], Any] | None = None,
         *,
-        bound: BoundClass[BoundToType],
+        bound: BoundClass[BndTo],
     ) -> Self:
         ref: Self = super().__new__(cls, ob, callback)  # type: ignore
         return ref
 
     def __init__(
         self,
-        ob: BoundToType,
-        callback: Callable[[weakref.ReferenceType[BoundToType]], Any] | None = None,
+        ob: BndTo,
+        callback: Callable[[weakref.ReferenceType[BndTo]], Any] | None = None,
         *,
-        bound: BoundClass[BoundToType],
+        bound: BoundClass[BndTo],
     ) -> None:
         # Add a reference to the BoundClass object (it holds ``ob``)
         self._bound_ref = weakref.ref(bound)
         # Create a finalizer that will be called when the referant is deleted,
-        # setting ``bound._self_ = None``.
+        # setting ``bound.__selfref__ = None``.
         weakref.finalize(ob, self._finalizer_callback)
 
     def _finalizer_callback(self) -> None:
-        """Callback for finalizer that sets ``bound._self_ = None``."""
+        """Callback for finalizer that sets ``bound.__selfref__ = None``."""
         bound = self._bound_ref()
         if bound is not None:  # check that reference to bound is alive.
             del bound.__self__
 
 
-class BoundClass(Generic[BoundToType]):
+class BoundClass(Generic[BndTo]):
     """Base class for a class bound to an instance of another class.
 
     Attributes
@@ -153,7 +153,7 @@ class BoundClass(Generic[BoundToType]):
     """
 
     @property
-    def __self__(self) -> BoundToType:
+    def __self__(self) -> BndTo:
         """Return object to which this one is bound.
 
         Returns
@@ -176,7 +176,7 @@ class BoundClass(Generic[BoundToType]):
         raise ReferenceError("no weakly-referenced object")
 
     @__self__.setter
-    def __self__(self, value: BoundToType) -> None:
+    def __self__(self, value: BndTo) -> None:
         # Set the reference.
         self._self_: BoundClassRef[BoundToType] | None
         self._self_ = BoundClassRef(value, bound=self)

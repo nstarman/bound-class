@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from typing import overload
 
 # LOCAL
-from .base import BoundDescriptorBase, BoundToType
+from .base import BndTo, BoundDescriptorBase
 
 # from typing_extensions import Self  # TODO! use when mypy doesn't complain
 
@@ -23,7 +23,7 @@ __all__ = ["BoundDescriptor"]
 
 
 @dataclass
-class BoundDescriptor(BoundDescriptorBase[BoundToType]):
+class BoundDescriptor(BoundDescriptorBase[BndTo]):
     """Descriptor stored on and accessess its enclosing instance.
 
     When attached as a descriptor this class will return itself if accesssed
@@ -104,25 +104,21 @@ class BoundDescriptor(BoundDescriptorBase[BoundToType]):
     """
 
     @overload
-    def __get__(self: BoundDescriptor[BoundToType], enclosing: BoundToType, _: None) -> BoundDescriptor[BoundToType]:
+    def __get__(self: BoundDescriptor[BndTo], enclosing: BndTo, _: None) -> BoundDescriptor[BndTo]:
         ...
 
     @overload
-    def __get__(
-        self: BoundDescriptor[BoundToType], enclosing: None, _: type[BoundToType]
-    ) -> BoundDescriptor[BoundToType]:
+    def __get__(self: BoundDescriptor[BndTo], enclosing: None, _: type[BndTo]) -> BoundDescriptor[BndTo]:
         ...
 
-    def __get__(
-        self: BoundDescriptor[BoundToType], enclosing: BoundToType | None, _: type[BoundToType] | None
-    ) -> BoundDescriptor[BoundToType]:
+    def __get__(self: BoundDescriptor[BndTo], enclosing: BndTo | None, _: type[BndTo] | None) -> BoundDescriptor[BndTo]:
         # When called without an instance, return self to allow access
         # to descriptor attributes.
         if enclosing is None:
             return self
 
         # accessed from an enclosing
-        # TODO! support if enclosing is slotted
+        # TODO! support if enclosing is slotted by having a `__cache__` option instead of the dict
         descriptor = enclosing.__dict__.get(self._enclosing_attr)  # get from enclosing
         if descriptor is None:  # hasn't been created on the enclosing
             descriptor = self._replace()
@@ -132,5 +128,6 @@ class BoundDescriptor(BoundDescriptorBase[BoundToType]):
         # We set `__self__` on every call, since if one makes copies of objs,
         # 'descriptor' will be copied as well, which will lose the reference.
         descriptor.__self__ = enclosing
+        # TODO? is it faster to check the reference then always make a new one.
 
         return descriptor

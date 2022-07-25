@@ -32,7 +32,7 @@ class SupportsDictAndName(Protocol):
         ...
 
 
-BoundToType = TypeVar("BoundToType", bound=SupportsDictAndName)
+BndTo = TypeVar("BndTo", bound=SupportsDictAndName)
 
 
 ##############################################################################
@@ -41,12 +41,12 @@ BoundToType = TypeVar("BoundToType", bound=SupportsDictAndName)
 
 
 @dataclass
-class BoundDescriptorBase(BoundClass[BoundToType]):
+class BoundDescriptorBase(BoundClass[BndTo]):
     """Base class for instance-level descriptors.
 
     Attributes
     ----------
-    enclosing : BoundToType
+    enclosing : BndTo
         Returns the enclosing instance to which this one is bound.
 
     Notes
@@ -84,7 +84,7 @@ class BoundDescriptorBase(BoundClass[BoundToType]):
         return descriptor
 
     @property
-    def enclosing(self) -> BoundToType:
+    def enclosing(self) -> BndTo:
         """Return the enclosing instance to which this one is bound."""
         return self.__self__
 
