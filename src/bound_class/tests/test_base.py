@@ -51,20 +51,19 @@ def test_boundto_connection(unbound):
     assert not hasattr(unbound, "__selfref__")
 
     with pytest.raises(ReferenceError, match="no weakly-referenced object"):
-        unbound.__selfref__
+        unbound.__self__
 
 
 def test_set_connection(unbound, boundto):
     # test no current connection
     with pytest.raises(ReferenceError, match="no weakly-referenced object"):
-        unbound.__selfref__
+        unbound.__self__
 
     # Set connection
-    unbound.__selfref__ = boundto
+    unbound.__self__ = boundto
 
     # Test new connection
-    assert unbound.__selfref__ is boundto
-    assert isinstance(unbound.__selfref__, ReferenceType)
+    assert unbound.__self__ is boundto
     assert isinstance(unbound.__selfref__, BoundClassRef)
     assert isinstance(unbound.__selfref__._bound_ref, ReferenceType)
     assert unbound.__selfref__._bound_ref() is unbound
@@ -72,14 +71,14 @@ def test_set_connection(unbound, boundto):
 
 def test_delete_connection(unbound, boundto):
     # Make bond
-    unbound.__selfref__ = boundto
-    assert unbound.__selfref__ is boundto  # ensure connected
+    unbound.__self__ = boundto
+    assert unbound.__self__ is boundto  # ensure connected
 
     # Delete and test
-    del unbound.__selfref__
+    del unbound.__self__
 
     with pytest.raises(ReferenceError, match="no weakly-referenced object"):
-        unbound.__selfref__
+        unbound.__self__
 
     assert unbound.__selfref__ is None
 
@@ -89,14 +88,14 @@ def test_boundto_deleted(unbound, boundto_cls):
     boundto = boundto_cls()
 
     # Make bond
-    unbound.__selfref__ = boundto
-    assert unbound.__selfref__ is boundto  # ensure connected
+    unbound.__self__ = boundto
+    assert unbound.__self__ is boundto  # ensure connected
 
     # Delete and test
     del boundto
 
     with pytest.raises(ReferenceError, match="no weakly-referenced object"):
-        unbound.__selfref__
+        unbound.__self__
 
     assert unbound.__selfref__ is None
 
@@ -110,10 +109,9 @@ def test_bound_not_alive_from_reference(bound_cls, boundto):
     """
     # need to make here for proper garbage collection
     bound = bound_cls()
-    bound.__selfref__ = boundto
+    bound.__self__ = boundto
 
     boundref = bound.__selfref__  # stays alive
-    assert isinstance(boundref, ReferenceType)
     assert isinstance(boundref, BoundClassRef)
     assert isinstance(boundref._bound_ref, ReferenceType)
     assert boundref._bound_ref() is bound
