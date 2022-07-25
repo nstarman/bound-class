@@ -34,7 +34,7 @@ if sys.version_info >= (3, 9):
 else:  # TODO! remove when py3.9+
 
     class ReferenceTypeShim(weakref.ReferenceType):
-        def __class_getitem__(cls, item):
+        def __class_getitem__(cls: type[ReferenceTypeShim], item: Any) -> type[ReferenceTypeShim]:
             return cls
 
 
@@ -152,6 +152,8 @@ class BoundClass(Generic[BndTo]):
         ex2 has been deleted
     """
 
+    __selfref__: BoundClassRef[BndTo] | None
+
     @property
     def __self__(self) -> BndTo:
         """Return object to which this one is bound.
@@ -166,8 +168,8 @@ class BoundClass(Generic[BndTo]):
             If no referant was assigned, if it was deleted, or if it was
             de-refenced (e.g. by ``del self.__self__``).
         """
-        if hasattr(self, "_self_") and isinstance(self._self_, BoundClassRef):
-            boundto = self._self_()  # dereference
+        if hasattr(self, "__selfref__") and isinstance(self.__selfref__, BoundClassRef):
+            boundto = self.__selfref__()  # dereference
             if boundto is not None:
                 return boundto
 
@@ -178,8 +180,8 @@ class BoundClass(Generic[BndTo]):
     @__self__.setter
     def __self__(self, value: BndTo) -> None:
         # Set the reference.
-        self._self_: BoundClassRef[BoundToType] | None
-        self._self_ = BoundClassRef(value, bound=self)
+        self.__selfref__: BoundClassRef[BndTo] | None
+        self.__selfref__ = BoundClassRef(value, bound=self)
         # Note: we use ReferenceType over ProxyType b/c the latter fails ``is``
         # and ``issubclass`` checks. ProxyType autodetects and cleans up
         # deletion of the referent, which ReferenceType does not, so we need a
@@ -188,4 +190,4 @@ class BoundClass(Generic[BndTo]):
     @__self__.deleter
     def __self__(self) -> None:
         # Romove reference without deleting the attribute.
-        self._self_ = None
+        self.__selfref__ = None
