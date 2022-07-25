@@ -10,14 +10,14 @@ from bound_class.descriptors import InstanceDescriptor
 
 class Test_InstanceDescriptor(BoundDescriptorBase_Test):
     @pytest.fixture
-    def descriptor_cls(self) -> type:
+    def descr_cls(self) -> type:
         return InstanceDescriptor
 
     # ===============================================================
 
-    def test___self___on_cls(self, descriptor_on_cls):
+    def test___self___on_cls(self, descr_on_cls):
         with pytest.raises(ReferenceError, match="no weakly-referenced object"):
-            descriptor_on_cls.__self__
+            descr_on_cls.__self__
 
     # -------------------------------------------
 

@@ -26,7 +26,7 @@ class BoundDescriptorBase_Test(metaclass=ABCMeta):
         return Enclosing
 
     @pytest.fixture
-    def descriptor_on_cls(self, encl_cls, encl_attr) -> object:
+    def descr_on_cls(self, encl_cls, encl_attr) -> object:
         return vars(encl_cls)[encl_attr]
 
     @pytest.fixture
@@ -41,11 +41,11 @@ class BoundDescriptorBase_Test(metaclass=ABCMeta):
 
     def test_encl_attr_on_cls(self, descr_cls):
         with pytest.raises(AttributeError):
-            descr_cls._encl_attr
+            descr_cls._enclosing_attr
 
     def test_encl_attr_on_inst(self, descr_on_inst, encl_attr):
         # This tests that __set_name__ was called on the new instance
-        assert descr_on_inst._encl_attr == encl_attr
+        assert descr_on_inst._enclosing_attr == encl_attr
 
     # -------------------------------------------
     # Test __get__

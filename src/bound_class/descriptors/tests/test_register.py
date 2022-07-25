@@ -1,13 +1,24 @@
 # STDLIB
+import warnings
 from dataclasses import dataclass
 from math import sqrt
+
+# THIRD PARTY
+import pytest
 
 # LOCAL
 from bound_class import register_descriptor
 from bound_class.descriptors import BoundDescriptor
+from bound_class.descriptors.register import DescriptorRegistrationWarning
 
 # TODO! add registration tests to ``test_base.py`` so that it applies to both
 # ``BoundDescriptor`` and ``InstanceDeescriptor``.
+
+
+def test_DescriptorRegistrationWarning():
+    """Simple test of ``DescriptorRegistrationWarning``."""
+    with pytest.warns(DescriptorRegistrationWarning):
+        warnings.warn("test", DescriptorRegistrationWarning)
 
 
 def test_register_cls():

@@ -10,7 +10,7 @@ from bound_class.descriptors import BoundDescriptor
 
 class Test_BoundDescriptor(BoundDescriptorBase_Test):
     @pytest.fixture
-    def descriptor_cls(self) -> type:
+    def descr_cls(self) -> type:
         return BoundDescriptor
 
     # ===============================================================

@@ -6,7 +6,7 @@
 from __future__ import annotations
 
 # STDLIB
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any, Literal, NoReturn, TypeVar
 
 # LOCAL
@@ -63,7 +63,7 @@ class BoundDescriptorBase(BoundClass[BndTo]):
     signatures for ``__get__``.
     """
 
-    cache_loc: CacheLoc = "__dict__"
+    cache_loc: CacheLoc = field(default="__dict__", repr=False)
 
     # ===============================================================
     # Descriptor

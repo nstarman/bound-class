@@ -1,5 +1,7 @@
 # TODO! move this to a better file
 
+from __future__ import annotations
+
 __all__: list[str] = []
 
 
