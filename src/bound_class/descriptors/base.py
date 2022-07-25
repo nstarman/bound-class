@@ -7,10 +7,15 @@ from __future__ import annotations
 
 # STDLIB
 from dataclasses import dataclass
-from typing import Any, Literal, NoReturn, Protocol, TypeVar
+from typing import TYPE_CHECKING, Any, Literal, NoReturn, TypeVar
 
 # LOCAL
-from bound_class.base import BoundClass
+from bound_class.base import BndTo, BoundClass
+
+if TYPE_CHECKING:
+    # THIRD PARTY
+    from typing_extensions import TypeAlias
+
 
 __all__: list[str] = []
 
@@ -20,16 +25,7 @@ __all__: list[str] = []
 
 Self = TypeVar("Self")  # mypy not yet compatible with Self
 
-
-class SupportsDictAndName(Protocol):
-    __dict__: dict[str, Any]
-
-    @property
-    def __name__(self) -> str:
-        ...
-
-
-BndTo = TypeVar("BndTo", bound=SupportsDictAndName)
+CacheLoc: TypeAlias = Literal["__dict__", "__cache__", None]
 
 
 ##############################################################################
@@ -67,7 +63,7 @@ class BoundDescriptorBase(BoundClass[BndTo]):
     signatures for ``__get__``.
     """
 
-    cache_loc: Literal["__dict__", "__cache__", None] = "__dict__"
+    cache_loc: CacheLoc = "__dict__"
 
     # ===============================================================
     # Descriptor
@@ -92,5 +88,14 @@ class BoundDescriptorBase(BoundClass[BndTo]):
 
     @property
     def enclosing(self) -> BndTo:
-        """Return the enclosing instance to which this one is bound."""
+        """Return the enclosing instance to which this one is bound.
+
+        Each access of this properety dereferences a `weakref.RefernceType`, so
+        it is sometimes better to assign this property to a variable and work
+        with that.
+
+        .. code-block:: python
+
+            obj = accessor.accessee obj...
+        """
         return self.__self__

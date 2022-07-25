@@ -10,7 +10,8 @@ from dataclasses import dataclass, replace
 from typing import Any, MutableMapping, overload
 
 # LOCAL
-from .base import BndTo, BoundDescriptorBase
+from .base import BoundDescriptorBase
+from bound_class.base import BndTo
 
 # from typing_extensions import Self  # TODO! use when mypy doesn't complain
 
@@ -124,18 +125,18 @@ class BoundDescriptor(BoundDescriptorBase[BndTo]):
             dsc = replace(self, **kwargs)
         else:  # try to get from cache
             cache: MutableMapping[str, Any] = getattr(enclosing, self.cache_loc)
-            cached = cache.get(self._enclosing_attr)  # get from enclosing.
+            obj = cache.get(self._enclosing_attr)  # get from enclosing.
 
-            if cached is None:  # hasn't been created on the enclosing
+            if obj is None:  # hasn't been created on the enclosing
                 dsc = replace(self, **kwargs)
                 # transfer any other information
                 dsc.__set_name__(dsc, self._enclosing_attr)
                 # store on enclosing instance
                 cache[self._enclosing_attr] = dsc
-            elif not isinstance(cached, self.__class__):
-                raise TypeError(f"dsc must type <{self.__class__}> not <{type(cached)}>")
+            elif not isinstance(obj, self.__class__):
+                raise TypeError(f"descriptor must be type <{type(self)}> not <{type(obj)}>")
             else:
-                dsc = cached
+                dsc = obj
 
         # We set `__self__` on every call, since if one makes copies of objs,
         # 'dsc' will be copied as well, which will lose the reference.

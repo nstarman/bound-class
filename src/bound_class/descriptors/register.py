@@ -4,11 +4,15 @@ from __future__ import annotations
 import inspect
 import warnings
 from dataclasses import replace
-from typing import Any, Callable
+from typing import TYPE_CHECKING, Any, Callable
 
 # LOCAL
-from .base import BndTo, BoundDescriptorBase
+from .base import BoundDescriptorBase
 from bound_class.common import DescriptorRegistrationWarning
+
+if TYPE_CHECKING:
+    # LOCAL
+    from bound_class.base import BndTo
 
 __all__: list[str] = []
 

@@ -13,17 +13,17 @@ from __future__ import annotations
 # STDLIB
 import sys
 import weakref
-from typing import Any, Callable, Generic, TypeVar
+from typing import Any, Callable, Generic, Protocol, TypeVar
 
 __all__ = ["BoundClass", "BoundClassRef"]
 
 ##############################################################################
 # PARAMETERS
 
-BndTo = TypeVar("BndTo")
-
 Self = TypeVar("Self")
 # TODO ``from typing_extensions import Self`` when supported
+
+BndTo = TypeVar("BndTo")
 
 
 ##############################################################################
@@ -196,3 +196,8 @@ class BoundClass(Generic[BndTo]):
     def __self__(self) -> None:
         # Romove reference without deleting the attribute.
         self.__selfref__ = None
+
+
+class BoundClassLike(Protocol[BndTo]):
+    __selfref__: BoundClassRef[BndTo] | None
+    __self__: BndTo
