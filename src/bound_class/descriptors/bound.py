@@ -122,6 +122,8 @@ class BoundDescriptor(BoundDescriptorBase[BndTo]):
         descriptor = enclosing.__dict__.get(self._enclosing_attr)  # get from enclosing
         if descriptor is None:  # hasn't been created on the enclosing
             descriptor = self._replace()
+            # transfer any other information
+            descriptor.__set_name__(descriptor, self._enclosing_attr)
             # store on enclosing instance
             enclosing.__dict__[self._enclosing_attr] = descriptor
 

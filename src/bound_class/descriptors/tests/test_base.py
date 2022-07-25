@@ -11,45 +11,70 @@ from bound_class.descriptors.base import BoundDescriptorBase
 class BoundDescriptorBase_Test(metaclass=ABCMeta):
     @pytest.fixture
     @abstractmethod
-    def descriptor_cls(self) -> type:
+    def descr_cls(self) -> type:
         return BoundDescriptorBase
 
     @pytest.fixture
-    def enclosing_attr(self) -> str:
+    def encl_attr(self) -> str:
         return "attr"
 
     @pytest.fixture
-    def enclosing_cls(self, descriptor_cls, enclosing_attr) -> type:
-        Enclosing = type("Enclosing", (object,), {enclosing_attr: descriptor_cls()})
+    def encl_cls(self, descr_cls, encl_attr) -> type:
+        Enclosing = type("Enclosing", (object,), {encl_attr: descr_cls()})
 
         return Enclosing
 
     @pytest.fixture
-    def descriptor_on_cls(self, enclosing_cls, enclosing_attr) -> object:
-        return vars(enclosing_cls)[enclosing_attr]
+    def descriptor_on_cls(self, encl_cls, encl_attr) -> object:
+        return vars(encl_cls)[encl_attr]
 
     @pytest.fixture
-    def enclosing(self, enclosing_cls) -> object:
-        return enclosing_cls()
+    def enclosing(self, encl_cls) -> object:
+        return encl_cls()
 
     @pytest.fixture
-    def descriptor_on_inst(self, enclosing, enclosing_attr) -> object:
-        return getattr(enclosing, enclosing_attr)
+    def descr_on_inst(self, enclosing, encl_attr) -> object:
+        return getattr(enclosing, encl_attr)
 
     # ===============================================================
 
-    def test_enclosing_attr_on_cls(self, descriptor_cls):
+    def test_encl_attr_on_cls(self, descr_cls):
         with pytest.raises(AttributeError):
-            descriptor_cls._enclosing_attr
+            descr_cls._encl_attr
 
-    def test_enclosing_attr_on_inst(self, descriptor_on_inst, enclosing_attr):
-        # This tests that __set_name__ was called
-        assert descriptor_on_inst._enclosing_attr == enclosing_attr
+    def test_encl_attr_on_inst(self, descr_on_inst, encl_attr):
+        # This tests that __set_name__ was called on the new instance
+        assert descr_on_inst._encl_attr == encl_attr
+
+    # -------------------------------------------
+    # Test __get__
+
+    def test_descr_on_inst_diff_on_cls(descriptor_on_cls, descr_on_inst):
+        # since it's a copy, it's not the same as the descriptor instance on the class
+        assert descr_on_inst is not descriptor_on_cls
+
+    def test___get__from_inst(self, descr_on_inst, enclosing, encl_attr):
+        # When get, the first time it is None, so self is copied and added to the dict of the enclosing.
+        assert encl_attr in enclosing.__dict__
+        assert enclosing.__dict__[encl_attr] is descr_on_inst
 
     # -------------------------------------------
 
-    def test_replace(self, descriptor_on_inst):
-        newdescriptor = descriptor_on_inst._replace()
+    def test_enclosing(self, descr_on_inst, enclosing):
+        """Test property ``enclosing``."""
+        assert descr_on_inst.enclosing is enclosing
 
-        assert newdescriptor is not descriptor_on_inst
-        assert newdescriptor == descriptor_on_inst
+    # -------------------------------------------
+
+    def test_replace(self, descr_on_inst):
+        """Test method ``_replace``."""
+        newdescriptor = descr_on_inst._replace()
+
+        assert newdescriptor is not descr_on_inst  # copy
+        assert newdescriptor == descr_on_inst  # is equal
+
+    # ===============================================================
+
+    def can_test_membership(self, encl_cls, encl_attr):
+        """Can test that a descriptor is on the class"""
+        hasattr(encl_cls, encl_attr)

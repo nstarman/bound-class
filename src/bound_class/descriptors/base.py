@@ -88,6 +88,11 @@ class BoundDescriptorBase(BoundClass[BndTo]):
 
     # ===============================================================
 
+    @property
+    def enclosing(self) -> BndTo:
+        """Return the enclosing instance to which this one is bound."""
+        return self.__self__
+
     def _replace(self: Self) -> Self:
         """Make a copy of the descriptor.
 
@@ -100,8 +105,3 @@ class BoundDescriptorBase(BoundClass[BndTo]):
         """
         descriptor = replace(self)
         return descriptor
-
-    @property
-    def enclosing(self) -> BndTo:
-        """Return the enclosing instance to which this one is bound."""
-        return self.__self__
