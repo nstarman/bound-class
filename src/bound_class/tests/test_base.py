@@ -48,7 +48,7 @@ def test_boundto_connection(unbound):
 
     B/c this is the base, bound is not yet connected to boundto.
     """
-    assert not hasattr(unbound, "_self_")
+    assert not hasattr(unbound, "__selfref__")
 
     with pytest.raises(ReferenceError, match="no weakly-referenced object"):
         unbound.__self__
@@ -64,10 +64,9 @@ def test_set_connection(unbound, boundto):
 
     # Test new connection
     assert unbound.__self__ is boundto
-    assert isinstance(unbound._self_, ReferenceType)
-    assert isinstance(unbound._self_, BoundClassRef)
-    assert isinstance(unbound._self_._bound_ref, ReferenceType)
-    assert unbound._self_._bound_ref() is unbound
+    assert isinstance(unbound.__selfref__, BoundClassRef)
+    assert isinstance(unbound.__selfref__._bound_ref, ReferenceType)
+    assert unbound.__selfref__._bound_ref() is unbound
 
 
 def test_delete_connection(unbound, boundto):
@@ -81,7 +80,7 @@ def test_delete_connection(unbound, boundto):
     with pytest.raises(ReferenceError, match="no weakly-referenced object"):
         unbound.__self__
 
-    assert unbound._self_ is None
+    assert unbound.__selfref__ is None
 
 
 def test_boundto_deleted(unbound, boundto_cls):
@@ -98,7 +97,7 @@ def test_boundto_deleted(unbound, boundto_cls):
     with pytest.raises(ReferenceError, match="no weakly-referenced object"):
         unbound.__self__
 
-    assert unbound._self_ is None
+    assert unbound.__selfref__ is None
 
 
 def test_bound_not_alive_from_reference(bound_cls, boundto):
@@ -112,8 +111,7 @@ def test_bound_not_alive_from_reference(bound_cls, boundto):
     bound = bound_cls()
     bound.__self__ = boundto
 
-    boundref = bound._self_  # stays alive
-    assert isinstance(boundref, ReferenceType)
+    boundref = bound.__selfref__  # stays alive
     assert isinstance(boundref, BoundClassRef)
     assert isinstance(boundref._bound_ref, ReferenceType)
     assert boundref._bound_ref() is bound

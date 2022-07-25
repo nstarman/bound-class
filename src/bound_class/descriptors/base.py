@@ -6,12 +6,16 @@
 from __future__ import annotations
 
 # STDLIB
-import copy
-from dataclasses import dataclass
-from typing import Any, NoReturn, Protocol, TypeVar
+from dataclasses import dataclass, field
+from typing import TYPE_CHECKING, Any, Literal, NoReturn, TypeVar
 
 # LOCAL
-from bound_class.base import BoundClass
+from bound_class.base import BndTo, BoundClass
+
+if TYPE_CHECKING:
+    # THIRD PARTY
+    from typing_extensions import TypeAlias
+
 
 __all__: list[str] = []
 
@@ -21,18 +25,7 @@ __all__: list[str] = []
 
 Self = TypeVar("Self")  # mypy not yet compatible with Self
 
-
-class SupportsDictAndName(Protocol):
-    @property
-    def __dict__(self) -> dict[str, Any]:  # type: ignore
-        ...
-
-    @property
-    def __name__(self) -> str:
-        ...
-
-
-BoundToType = TypeVar("BoundToType", bound=SupportsDictAndName)
+CacheLoc: TypeAlias = Literal["__dict__", "__cache__", None]
 
 
 ##############################################################################
@@ -41,12 +34,12 @@ BoundToType = TypeVar("BoundToType", bound=SupportsDictAndName)
 
 
 @dataclass
-class BoundDescriptorBase(BoundClass[BoundToType]):
+class BoundDescriptorBase(BoundClass[BndTo]):
     """Base class for instance-level descriptors.
 
     Attributes
     ----------
-    enclosing : BoundToType
+    enclosing : BndTo
         Returns the enclosing instance to which this one is bound.
 
     Notes
@@ -70,31 +63,39 @@ class BoundDescriptorBase(BoundClass[BoundToType]):
     signatures for ``__get__``.
     """
 
+    cache_loc: CacheLoc = field(default="__dict__", repr=False)
+
+    # ===============================================================
+    # Descriptor
+
     def __set_name__(self, _: Any, name: str) -> None:
         # Store the name of the attribute on the enclosing object
         self._enclosing_attr: str
         object.__setattr__(self, "_enclosing_attr", name)
 
-    def _replace(self: Self) -> Self:
-        """Make a copy of the descriptor.
-
-        This function a.
-        """
-        descriptor = copy.copy(self)  # TODO? deepcopy
-        return descriptor
-
-    @property
-    def enclosing(self) -> BoundToType:
-        """Return the enclosing instance to which this one is bound."""
-        return self.__self__
-
     # @abstractmethod
     # def __get__(
     #     self,
-    #     enclosing: BoundToType | None,
-    #     enclosing_type: None | type[BoundToType],
+    #     enclosing: BndTo | None,
+    #     enclosing_type: None | type[BndTo],
     # ):
     #     ...
 
     def __set__(self, _: str, __: Any) -> NoReturn:
         raise AttributeError  # TODO! useful error message
+
+    # ===============================================================
+
+    @property
+    def enclosing(self) -> BndTo:
+        """Return the enclosing instance to which this one is bound.
+
+        Each access of this properety dereferences a `weakref.RefernceType`, so
+        it is sometimes better to assign this property to a variable and work
+        with that.
+
+        .. code-block:: python
+
+            obj = accessor.accessee obj...
+        """
+        return self.__self__

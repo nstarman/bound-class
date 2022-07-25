@@ -6,11 +6,12 @@
 from __future__ import annotations
 
 # STDLIB
-from dataclasses import dataclass
-from typing import overload
+from dataclasses import dataclass, replace
+from typing import Any, MutableMapping, overload
 
 # LOCAL
-from .base import BoundDescriptorBase, BoundToType
+from .base import BoundDescriptorBase
+from bound_class.base import BndTo
 
 # from typing_extensions import Self  # TODO! use when mypy doesn't complain
 
@@ -23,7 +24,7 @@ __all__ = ["BoundDescriptor"]
 
 
 @dataclass
-class BoundDescriptor(BoundDescriptorBase[BoundToType]):
+class BoundDescriptor(BoundDescriptorBase[BndTo]):
     """Descriptor stored on and accessess its enclosing instance.
 
     When attached as a descriptor this class will return itself if accesssed
@@ -104,33 +105,42 @@ class BoundDescriptor(BoundDescriptorBase[BoundToType]):
     """
 
     @overload
-    def __get__(self: BoundDescriptor[BoundToType], enclosing: BoundToType, _: None) -> BoundDescriptor[BoundToType]:
+    def __get__(self: BoundDescriptor[BndTo], enclosing: BndTo, _: None, **kwargs: Any) -> BoundDescriptor[BndTo]:
         ...
 
     @overload
-    def __get__(
-        self: BoundDescriptor[BoundToType], enclosing: None, _: type[BoundToType]
-    ) -> BoundDescriptor[BoundToType]:
+    def __get__(self: BoundDescriptor[BndTo], enclosing: None, _: type[BndTo], **kwargs: Any) -> BoundDescriptor[BndTo]:
         ...
 
     def __get__(
-        self: BoundDescriptor[BoundToType], enclosing: BoundToType | None, _: type[BoundToType] | None
-    ) -> BoundDescriptor[BoundToType]:
+        self: BoundDescriptor[BndTo], enclosing: BndTo | None, _: type[BndTo] | None, **kwargs: Any
+    ) -> BoundDescriptor[BndTo]:
         # When called without an instance, return self to allow access
         # to descriptor attributes.
         if enclosing is None:
             return self
 
         # accessed from an enclosing
-        # TODO! support if enclosing is slotted
-        descriptor = enclosing.__dict__.get(self._enclosing_attr)  # get from enclosing
-        if descriptor is None:  # hasn't been created on the enclosing
-            descriptor = self._replace()
-            # store on enclosing instance
-            enclosing.__dict__[self._enclosing_attr] = descriptor
+        if self.cache_loc is None:
+            dsc = replace(self, **kwargs)
+        else:  # try to get from cache
+            cache: MutableMapping[str, Any] = getattr(enclosing, self.cache_loc)
+            obj = cache.get(self._enclosing_attr)  # get from enclosing.
+
+            if obj is None:  # hasn't been created on the enclosing
+                dsc = replace(self, **kwargs)
+                # transfer any other information
+                dsc.__set_name__(dsc, self._enclosing_attr)
+                # store on enclosing instance
+                cache[self._enclosing_attr] = dsc
+            elif not isinstance(obj, type(self)):
+                raise TypeError(f"descriptor must be type <{type(self)}> not <{type(obj)}>")
+            else:
+                dsc = obj
 
         # We set `__self__` on every call, since if one makes copies of objs,
-        # 'descriptor' will be copied as well, which will lose the reference.
-        descriptor.__self__ = enclosing
+        # 'dsc' will be copied as well, which will lose the reference.
+        dsc.__self__ = enclosing
+        # TODO? is it faster to check the reference then always make a new one.
 
-        return descriptor
+        return dsc
