@@ -6,8 +6,7 @@
 from __future__ import annotations
 
 # STDLIB
-import copy
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Any, NoReturn, Protocol, TypeVar
 
 # LOCAL
@@ -23,9 +22,7 @@ Self = TypeVar("Self")  # mypy not yet compatible with Self
 
 
 class SupportsDictAndName(Protocol):
-    @property
-    def __dict__(self) -> dict[str, Any]:  # type: ignore
-        ...
+    __dict__: dict[str, Any]
 
     @property
     def __name__(self) -> str:
@@ -70,31 +67,41 @@ class BoundDescriptorBase(BoundClass[BndTo]):
     signatures for ``__get__``.
     """
 
+    # ===============================================================
+    # Descriptor
+
     def __set_name__(self, _: Any, name: str) -> None:
         # Store the name of the attribute on the enclosing object
         self._enclosing_attr: str
         object.__setattr__(self, "_enclosing_attr", name)
 
+    # @abstractmethod
+    # def __get__(
+    #     self,
+    #     enclosing: BndTo | None,
+    #     enclosing_type: None | type[BndTo],
+    # ):
+    #     ...
+
+    def __set__(self, _: str, __: Any) -> NoReturn:
+        raise AttributeError  # TODO! useful error message
+
+    # ===============================================================
+
     def _replace(self: Self) -> Self:
         """Make a copy of the descriptor.
 
-        This function a.
+        .. todo::
+            other options:
+            1. dataclasses.replace, with args, kwargs
+            2. copy
+            3. deepcopy
+            4. ``__init__``
         """
-        descriptor = copy.copy(self)  # TODO? deepcopy
+        descriptor = replace(self)
         return descriptor
 
     @property
     def enclosing(self) -> BndTo:
         """Return the enclosing instance to which this one is bound."""
         return self.__self__
-
-    # @abstractmethod
-    # def __get__(
-    #     self,
-    #     enclosing: BoundToType | None,
-    #     enclosing_type: None | type[BoundToType],
-    # ):
-    #     ...
-
-    def __set__(self, _: str, __: Any) -> NoReturn:
-        raise AttributeError  # TODO! useful error message
