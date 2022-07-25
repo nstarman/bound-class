@@ -1,5 +1,3 @@
-# TODO! rename this file
-
 from __future__ import annotations
 
 # STDLIB
@@ -12,7 +10,7 @@ from typing import Any, Callable
 from .base import BndTo, BoundDescriptorBase
 from bound_class.common import DescriptorRegistrationWarning
 
-__all__ = ["register_descriptor"]
+__all__: list[str] = []
 
 
 def register_descriptor(
@@ -34,32 +32,37 @@ def register_descriptor(
 
     Examples
     --------
-    First we import
+    First the basic imports:
 
         >>> from dataclasses import dataclass
-        >>> import numpy as np
-        >>> from bound_class.descriptors import InstanceDescriptor, register_descriptor
+        >>> from math import atan2, sqrt
 
-    The primary class.
+    Descriptors are attached to a primary class. Here, we have a 2D vector in
+    Cartesian coordinates.
 
         >>> @dataclass
-        ... class Vector:
+        ... class Cartesian:
         ...     x: float
         ...     y: float
-        ...     z: float
 
-    Add a descriptor.
+    With descriptors we can work with the vector in other coordinate systems:
 
-        >>> @register_descriptor(Vector, "spherical")
-        ... class Spherical(InstanceDescriptor):
+        >>> from bound_class.descriptors import InstanceDescriptor, register_descriptor
+        >>> @register_descriptor(Cartesian, "spherical")
+        ... class SphericalDescriptor(InstanceDescriptor):
         ...
         ...     @property
         ...     def r(self):
-        ...         return np.sqrt(self.enclosing.x**2 + self.enclosing.y**2 + self.enclosing.z**2)
+        ...         return sqrt(self.enclosing.x**2 + self.enclosing.y**2)
+        ...     @property
+        ...     def theta(self):
+        ...         return atan2(self.enclosing.y, self.enclosing.x)
 
-        >>> v = Vector(1.0, 2.0, 3.0)
+        >>> v = Cartesian(3.0, 4.0)
         >>> v.spherical.r
         5.0
+        >>> v.spherical.theta  # doctest: +FLOAT_CMP
+        0.92729
     """
 
     def decorator(
