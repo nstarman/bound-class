@@ -6,8 +6,8 @@
 from __future__ import annotations
 
 # STDLIB
-from dataclasses import dataclass
-from typing import NoReturn, overload
+from dataclasses import dataclass, replace
+from typing import Any, MutableMapping, NoReturn, overload
 
 # LOCAL
 from .base import BndTo, BoundDescriptorBase
@@ -93,9 +93,7 @@ class InstanceDescriptor(BoundDescriptorBase[BndTo]):
         ...
 
     def __get__(
-        self: InstanceDescriptor[BndTo],
-        enclosing: BndTo | None,
-        enclosing_cls: type[BndTo] | None,
+        self: InstanceDescriptor[BndTo], enclosing: BndTo | None, enclosing_cls: type[BndTo] | None, **kwargs: Any
     ) -> InstanceDescriptor[BndTo] | NoReturn:
         # When called without an instance, return self to allow access
         # to descriptor attributes.
@@ -106,18 +104,26 @@ class InstanceDescriptor(BoundDescriptorBase[BndTo]):
             raise AttributeError(msg)
 
         # accessed from an enclosing
-        # TODO! support if enclosing has slots
-        descriptor = enclosing.__dict__.get(self._enclosing_attr)  # get from enclosing
-        if descriptor is None:  # hasn't been created on the enclosing
-            descriptor = self._replace()
-            # transfer any other information
-            descriptor.__set_name__(descriptor, self._enclosing_attr)
-            # store on enclosing instance
-            enclosing.__dict__[self._enclosing_attr] = descriptor
+        if self.cache_loc is None:
+            dsc = replace(self, **kwargs)
+        else:  # try to get from cache
+            cache: MutableMapping[str, Any] = getattr(enclosing, self.cache_loc)
+            cached = cache.get(self._enclosing_attr)  # get from enclosing.
+
+            if cached is None:  # hasn't been created on the enclosing
+                dsc = replace(self, **kwargs)
+                # transfer any other information
+                dsc.__set_name__(dsc, self._enclosing_attr)
+                # store on enclosing instance
+                cache[self._enclosing_attr] = dsc
+            elif not isinstance(cached, self.__class__):
+                raise TypeError(f"dsc must type <{self.__class__}> not <{type(cached)}>")
+            else:
+                dsc = cached
 
         # We set `__self__` on every call, since if one makes copies of objs,
-        # 'descriptor' will be copied as well, which will lose the reference.
-        descriptor.__self__ = enclosing
+        # 'dsc' will be copied as well, which will lose the reference.
+        dsc.__self__ = enclosing
         # TODO? is it faster to check the reference then always make a new one.
 
-        return descriptor
+        return dsc

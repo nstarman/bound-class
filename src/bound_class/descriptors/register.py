@@ -93,7 +93,8 @@ def register_descriptor(
                 stacklevel=2,
             )
 
-        # Make the descriptor instance: instantiate class or make copy
+        # Make the descriptor instance:
+        # opt 1) instantiate class
         if inspect.isclass(descriptor):
             if not issubclass(descriptor, BoundDescriptorBase):
                 raise ValueError  # TODO! error message
@@ -104,11 +105,12 @@ def register_descriptor(
 
             descr = descriptor(*ba.args[1:], **ba.kwargs)  # make instance (skip 'self=None')
 
+        # opt 2) copy existing instance
         else:
             if not isinstance(descriptor, BoundDescriptorBase):
                 raise ValueError  # TODO! error message
 
-            descr = replace(descriptor, **kwargs)  # TODO! use ``_replace`` method
+            descr = replace(descriptor, **kwargs)
 
         # Set the descriptor on the class.
         descr.__set_name__(descr, name)  # descriptor callback

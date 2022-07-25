@@ -6,8 +6,8 @@
 from __future__ import annotations
 
 # STDLIB
-from dataclasses import dataclass, replace
-from typing import Any, NoReturn, Protocol, TypeVar
+from dataclasses import dataclass
+from typing import Any, Literal, NoReturn, Protocol, TypeVar
 
 # LOCAL
 from bound_class.base import BoundClass
@@ -67,6 +67,8 @@ class BoundDescriptorBase(BoundClass[BndTo]):
     signatures for ``__get__``.
     """
 
+    cache_loc: Literal["__dict__", "__cache__", None] = "__dict__"
+
     # ===============================================================
     # Descriptor
 
@@ -92,16 +94,3 @@ class BoundDescriptorBase(BoundClass[BndTo]):
     def enclosing(self) -> BndTo:
         """Return the enclosing instance to which this one is bound."""
         return self.__self__
-
-    def _replace(self: Self) -> Self:
-        """Make a copy of the descriptor.
-
-        .. todo::
-            other options:
-            1. dataclasses.replace, with args, kwargs
-            2. copy
-            3. deepcopy
-            4. ``__init__``
-        """
-        descriptor = replace(self)
-        return descriptor

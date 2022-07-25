@@ -1,5 +1,6 @@
 # STDLIB
 from abc import ABCMeta, abstractmethod
+from dataclasses import replace
 
 # THIRD PARTY
 import pytest
@@ -67,8 +68,8 @@ class BoundDescriptorBase_Test(metaclass=ABCMeta):
     # -------------------------------------------
 
     def test_replace(self, descr_on_inst):
-        """Test method ``_replace``."""
-        newdescriptor = descr_on_inst._replace()
+        """Test ``replace(descriptor)``."""
+        newdescriptor = replace(descr_on_inst)
 
         assert newdescriptor is not descr_on_inst  # copy
         assert newdescriptor == descr_on_inst  # is equal
