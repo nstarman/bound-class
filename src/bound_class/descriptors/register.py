@@ -3,7 +3,6 @@ from __future__ import annotations
 # STDLIB
 import inspect
 import warnings
-from dataclasses import replace
 from typing import TYPE_CHECKING, Any, Callable
 
 # LOCAL
@@ -19,11 +18,8 @@ __all__: list[str] = []
 
 def register_descriptor(
     cls: type[BndTo], name: str, **kwargs: Any
-) -> Callable[
-    [BoundDescriptorBase[BndTo] | type[BoundDescriptorBase[BndTo]]],
-    BoundDescriptorBase[BndTo] | type[BoundDescriptorBase[BndTo]],
-]:
-    """Decorator to register a descriptor -- class or instance.
+) -> Callable[[type[BoundDescriptorBase[BndTo]]], type[BoundDescriptorBase[BndTo]]]:
+    """Decorator to register a descriptor class.
 
     Parameters
     ----------
@@ -69,9 +65,7 @@ def register_descriptor(
         0.92729
     """
 
-    def decorator(
-        descriptor: BoundDescriptorBase[BndTo] | type[BoundDescriptorBase[BndTo]],
-    ) -> BoundDescriptorBase[BndTo] | type[BoundDescriptorBase[BndTo]]:
+    def decorator(descriptor: type[BoundDescriptorBase[BndTo]]) -> type[BoundDescriptorBase[BndTo]]:
         """Set the descriptor on the class.
 
         Parameters
@@ -99,22 +93,15 @@ def register_descriptor(
 
         # Make the descriptor instance:
         # opt 1) instantiate class
-        if inspect.isclass(descriptor):
+        if not TYPE_CHECKING:  # TODO! unnecessary with mypyc
             if not issubclass(descriptor, BoundDescriptorBase):
                 raise ValueError  # TODO! error message
 
-            # correctly parse args vs kwargs
-            sig = inspect.signature(descriptor.__init__)
-            ba = sig.bind_partial(None, **kwargs)  # None -> self in unbound __init__
+        # correctly parse args vs kwargs
+        sig = inspect.signature(descriptor.__init__)
+        ba = sig.bind_partial(None, **kwargs)  # None -> self in unbound __init__
 
-            descr = descriptor(*ba.args[1:], **ba.kwargs)  # make instance (skip 'self=None')
-
-        # opt 2) copy existing instance
-        else:
-            if not isinstance(descriptor, BoundDescriptorBase):
-                raise ValueError  # TODO! error message
-
-            descr = replace(descriptor, **kwargs)
+        descr = descriptor(*ba.args[1:], **ba.kwargs)  # make instance (skip 'self=None')
 
         # Set the descriptor on the class.
         descr.__set_name__(descr, name)  # descriptor callback

@@ -86,11 +86,13 @@ class InstanceDescriptor(BoundDescriptorBase[BndTo]):
     """
 
     @overload
-    def __get__(self: InstanceDescriptor[BndTo], enclosing: BndTo, enclosing_cls: None) -> InstanceDescriptor[BndTo]:
+    def __get__(
+        self: InstanceDescriptor[BndTo], enclosing: BndTo, enclosing_cls: None, **kwargs: Any
+    ) -> InstanceDescriptor[BndTo]:
         ...
 
     @overload
-    def __get__(self, enclosing: None, enclosing_cls: type[BndTo]) -> NoReturn:
+    def __get__(self, enclosing: None, enclosing_cls: type[BndTo], **kwargs: Any) -> NoReturn:
         ...
 
     def __get__(
@@ -117,7 +119,7 @@ class InstanceDescriptor(BoundDescriptorBase[BndTo]):
                 dsc.__set_name__(dsc, self._enclosing_attr)
                 # store on enclosing instance
                 cache[self._enclosing_attr] = dsc
-            elif not isinstance(obj, self.__class__):
+            elif not isinstance(obj, type(self)):
                 raise TypeError(f"descriptor must be type <{type(self)}> not <{type(obj)}>")
             else:
                 dsc = obj
