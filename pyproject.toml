@@ -30,6 +30,7 @@
   ]
   dependencies = [
     "typing_extensions>=4.2",
+    "mypy_extensions",
   ]
 
 [project.optional-dependencies]
@@ -61,7 +62,12 @@
 
 
 [tool.setuptools]
-  package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"*" = ["py.typed"]
 
 [tool.setuptools_scm]
 

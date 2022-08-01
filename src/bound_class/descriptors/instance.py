@@ -44,7 +44,7 @@ class InstanceDescriptor(BoundDescriptorBase[BndTo]):
 
         >>> ex = Example("ex_instance")
         >>> ex.attribute
-        ExampleInstanceDescriptor()
+        ExampleInstanceDescriptor(store_in='__dict__')
 
     What's special about |BoundClass|-derived descriptors is that their
     instances are bound to the instance of the enclosing class, not the class
@@ -86,17 +86,15 @@ class InstanceDescriptor(BoundDescriptorBase[BndTo]):
     """
 
     @overload
-    def __get__(
-        self: InstanceDescriptor[BndTo], enclosing: BndTo, enclosing_cls: None, **kwargs: Any
-    ) -> InstanceDescriptor[BndTo]:
+    def __get__(self: InstanceDescriptor[BndTo], enclosing: BndTo, enclosing_cls: None) -> InstanceDescriptor[BndTo]:
         ...
 
     @overload
-    def __get__(self, enclosing: None, enclosing_cls: type[BndTo], **kwargs: Any) -> NoReturn:
+    def __get__(self, enclosing: None, enclosing_cls: type[BndTo]) -> NoReturn:
         ...
 
     def __get__(
-        self: InstanceDescriptor[BndTo], enclosing: BndTo | None, enclosing_cls: type[BndTo] | None, **kwargs: Any
+        self: InstanceDescriptor[BndTo], enclosing: BndTo | None, enclosing_cls: type[BndTo] | None
     ) -> InstanceDescriptor[BndTo] | NoReturn:
         # When called without an instance, return self to allow access
         # to descriptor attributes.
@@ -107,14 +105,14 @@ class InstanceDescriptor(BoundDescriptorBase[BndTo]):
             raise AttributeError(msg)
 
         # accessed from an enclosing
-        if self.cache_loc is None:
-            dsc = replace(self, **kwargs)
+        if self.store_in is None:
+            dsc = replace(self)
         else:  # try to get from cache
-            cache: MutableMapping[str, Any] = getattr(enclosing, self.cache_loc)
+            cache: MutableMapping[str, Any] = getattr(enclosing, self.store_in)
             obj = cache.get(self._enclosing_attr)  # get from enclosing.
 
             if obj is None:  # hasn't been created on the enclosing
-                dsc = replace(self, **kwargs)
+                dsc = replace(self)
                 # transfer any other information
                 dsc.__set_name__(dsc, self._enclosing_attr)
                 # store on enclosing instance

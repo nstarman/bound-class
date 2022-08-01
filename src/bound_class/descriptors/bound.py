@@ -52,13 +52,13 @@ class BoundDescriptor(BoundDescriptorBase[BndTo]):
     class on which they are defined
 
         >>> Example.attribute
-        ExampleBoundDescriptor()
+        ExampleBoundDescriptor(store_in='__dict__')
 
     Descriptors also work on instances.
 
         >>> ex = Example("ex_instance")
         >>> ex.attribute
-        ExampleBoundDescriptor()
+        ExampleBoundDescriptor(store_in='__dict__')
 
     What's special about |BoundClass|-derived descriptors is that their
     instances are bound to the instance of the enclosing class, not the class
@@ -105,30 +105,28 @@ class BoundDescriptor(BoundDescriptorBase[BndTo]):
     """
 
     @overload
-    def __get__(self: BoundDescriptor[BndTo], enclosing: BndTo, _: None, **kwargs: Any) -> BoundDescriptor[BndTo]:
+    def __get__(self: BoundDescriptor[BndTo], enclosing: BndTo, _: None) -> BoundDescriptor[BndTo]:
         ...
 
     @overload
-    def __get__(self: BoundDescriptor[BndTo], enclosing: None, _: type[BndTo], **kwargs: Any) -> BoundDescriptor[BndTo]:
+    def __get__(self: BoundDescriptor[BndTo], enclosing: None, _: type[BndTo]) -> BoundDescriptor[BndTo]:
         ...
 
-    def __get__(
-        self: BoundDescriptor[BndTo], enclosing: BndTo | None, _: type[BndTo] | None, **kwargs: Any
-    ) -> BoundDescriptor[BndTo]:
+    def __get__(self: BoundDescriptor[BndTo], enclosing: BndTo | None, _: type[BndTo] | None) -> BoundDescriptor[BndTo]:
         # When called without an instance, return self to allow access
         # to descriptor attributes.
         if enclosing is None:
             return self
 
         # accessed from an enclosing
-        if self.cache_loc is None:
-            dsc = replace(self, **kwargs)
+        if self.store_in is None:
+            dsc = replace(self)
         else:  # try to get from cache
-            cache: MutableMapping[str, Any] = getattr(enclosing, self.cache_loc)
+            cache: MutableMapping[str, Any] = getattr(enclosing, self.store_in)
             obj = cache.get(self._enclosing_attr)  # get from enclosing.
 
             if obj is None:  # hasn't been created on the enclosing
-                dsc = replace(self, **kwargs)
+                dsc = replace(self)
                 # transfer any other information
                 dsc.__set_name__(dsc, self._enclosing_attr)
                 # store on enclosing instance
