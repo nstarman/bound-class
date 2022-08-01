@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 # STDLIB
-from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any, MutableMapping, NoReturn, overload
+from dataclasses import dataclass
+from typing import TYPE_CHECKING, Any, Literal, MutableMapping, NoReturn, overload
 
 # LOCAL
 from bound_class.base import BndTo
-from bound_class.descriptors.base import BoundDescriptorBase, CacheLoc
+from bound_class.descriptors.base import BoundDescriptorBase
 
 if TYPE_CHECKING:
     # LOCAL
@@ -25,19 +25,21 @@ class AccessorProperty(BoundDescriptorBase[BndTo]):
         Must NOT be None. This may look like a valid option, but it is not.
         :mod:`dataclasses` in Python <= 3.10 does not support inheitance and
         keyword argument ordering.
-    cache_loc : {"__dict__", "__cache__"}
+    store_in : {"__dict__", "_attrs_"}
         Should be in ``__slots__`` of enclosing object.
     """
 
     # See https://github.com/pandas-dev/pandas/blob/main/pandas/_libs/properties.pyx for a CPython implementation
 
     accessor_cls: type[AccessorLike[BndTo]] | None = None
-    cache_loc: CacheLoc = field(default="__dict__", repr=False)
+    store_in: Literal["__dict__", "_attrs_"] | None = "__dict__"
 
     # TODO! not need this in py3.9 when have improved dataclass
-    def __init__(self, accessor_cls: type[AccessorLike[BndTo]], cache_loc: CacheLoc = "__dict__") -> None:
+    def __init__(
+        self, accessor_cls: type[AccessorLike[BndTo]], store_in: Literal["__dict__", "_attrs_"] | None = "__dict__"
+    ) -> None:
         object.__setattr__(self, "accessor_cls", accessor_cls)
-        object.__setattr__(self, "cache_loc", cache_loc)
+        object.__setattr__(self, "store_in", store_in)
 
     def __post_init__(self) -> None:
         # TODO! remove when py3.10+
@@ -69,11 +71,11 @@ class AccessorProperty(BoundDescriptorBase[BndTo]):
             return self.accessor_cls
 
         # Opt 2) accessed from the instance, so return accesssor instance.
-        if self.cache_loc is None:
+        if self.store_in is None:
             accessor = self.accessor_cls(enclosing)
 
         else:  # try to get from cache
-            cache: MutableMapping[str, Any] = getattr(enclosing, self.cache_loc)
+            cache: MutableMapping[str, Any] = getattr(enclosing, self.store_in)
             obj = cache.get(self._enclosing_attr)  # get from enclosing.
 
             if obj is None:  # hasn't been created on the enclosing
