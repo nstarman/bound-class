@@ -1,0 +1,67 @@
+[build-system]
+  requires = [
+    "extension-helpers",
+    "setuptools>=45",
+    "wheel"
+  ]
+
+  build-backend = 'setuptools.build_meta'
+
+[project]
+  name = "bound_class.io"
+  version = "0.1.0"
+  description = "I/O with bound classes."
+  readme = "README.rst"
+  requires-python = ">=3.8"
+  license = {file = "LICENSE"}
+  keywords = ["python"]
+  authors = [
+    {name = "Nathaniel Starkman", email = "n.starkman@mail.utoronto.ca"}
+  ]
+  maintainers = [
+    {name = "Nathaniel Starkman", email = "n.starkman@mail.utoronto.ca"}
+  ]
+  classifiers = [
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+  ]
+  dependencies = [
+    "typing_extensions>=4.2",
+  ]
+
+[project.optional-dependencies]
+  test = [
+    "coverage[toml]",
+    "pytest",
+    "pytest-astropy-header",
+    "pytest-cov",
+    "pytest-doctestplus",
+    "pytest-filter-subpackage",
+  ]
+  docs = [
+    "IPython",
+    "jupyter_client",
+    "nbsphinx",
+    "numpydoc",
+    "pydata_sphinx_theme",
+    "sphinx",
+    "sphinx_automodapi",
+    "sphinxcontrib.bibtex",
+    "tomli",
+  ]
+
+[project.urls]
+  homepage = "https://bound_class.readthedocs.io"
+  repository = "https://github.com/nstarman/bound-class"
+  documentation = "https://bound_class.readthedocs.io"
+
+
+[tool.setuptools]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"*" = ["py.typed"]

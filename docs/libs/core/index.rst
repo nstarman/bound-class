@@ -12,8 +12,8 @@ Introduction
 .. toctree::
     :maxdepth: 1
 
-    libs/core/base
-    libs/core/descriptors
+    base
+    descriptors
 
 
 Weak References

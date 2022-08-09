@@ -2,10 +2,10 @@ from __future__ import annotations
 
 # STDLIB
 import warnings
-from typing import TYPE_CHECKING, Callable, Literal
+from typing import TYPE_CHECKING, Callable, Literal, TypeVar
 
 # LOCAL
-from bound_class.core.accessors.descriptor import AccessorProperty
+from bound_class.core.accessors.descriptor import AccessorPropertyBase
 from bound_class.core.descriptors.register import DescriptorRegistrationWarning
 
 if TYPE_CHECKING:
@@ -14,6 +14,9 @@ if TYPE_CHECKING:
     from bound_class.core.base import BndTo
 
 __all__: list[str] = []
+
+
+T = TypeVar("T", bound=AccessorPropertyBase)  # type: ignore
 
 
 class AccessorRegistrationWarning(DescriptorRegistrationWarning):
@@ -25,6 +28,7 @@ def register_accessor(
     name: str,
     *,
     store_in: Literal["__dict__", "_attrs_"] | None = "__dict__",
+    descriptor_cls: type[AccessorPropertyBase[BndTo]] = AccessorPropertyBase,
 ) -> Callable[[type[AccessorLike[BndTo]]], type[AccessorLike[BndTo]]]:
     def decorator(accessor_cls: type[AccessorLike[BndTo]]) -> type[AccessorLike[BndTo]]:
         # TODO! validation that ``accessor_cls``
@@ -37,7 +41,7 @@ def register_accessor(
                 stacklevel=2,
             )
 
-        descriptor = AccessorProperty(accessor_cls, store_in=store_in)
+        descriptor = descriptor_cls(accessor_cls=accessor_cls, store_in=store_in)
         descriptor.__set_name__(descriptor, name)
         setattr(cls, name, descriptor)
 
