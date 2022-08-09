@@ -1,4 +1,4 @@
-.. module:: bound-class
+.. module:: bound_class
 
 ***********
 Bound-Class
@@ -14,7 +14,7 @@ namespace -- e.g. all plot methods can be grouped.
 
 .. code-block:: python
 
-   from bound_class.descriptors import InstanceDescriptor
+   from bound_class.core.descriptors import InstanceDescriptor
 
    class BoundPlotter(InstanceDescriptor):
        def histogram(self, ...):

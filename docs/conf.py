@@ -6,13 +6,29 @@ import sys
 from importlib import import_module
 
 # THIRD PARTY
-import tomlkit
+import tomli
 
-# Get configuration information from pyproject.toml
-docs_root = pathlib.Path(__file__).parent.parent / "pyproject.toml"
-with docs_root.open() as f:
-    toml = tomlkit.load(f)
-setup_cfg = dict(toml["project"])
+
+def get_authors(*pkg_names: str) -> set[str]:
+    """Get author information from ``pyproject.toml``s.
+
+    Returns
+    -------
+    set[str]
+        The authors.
+    """
+
+    authors: set[str] = set()
+    libs = pathlib.Path(__file__).parent.parent / "libs"
+
+    for pkg_name in pkg_names:
+        cfg = libs / pkg_name / "pyproject.toml"
+        with cfg.open() as f:
+            toml = tomli.load(f)
+        project = dict(toml["project"])
+        authors.update({d["name"] for d in project["authors"]})
+
+    return authors
 
 
 # -- General configuration ----------------------------------------------------
@@ -33,7 +49,10 @@ templates_path = ["_templates"]
 source_suffix = ".rst"
 
 # Sphinx extensions
-extensions = ["sphinx_automodapi.automodapi"]
+extensions = [
+    "sphinx_automodapi.automodapi",
+    "pytest_doctestplus.sphinx.doctestplus",
+]
 
 autosummary_generate = True
 
@@ -50,7 +69,7 @@ autoclass_content = "both"
 # This is added to the end of RST files - a good place to put substitutions to
 # be used globally.
 rst_epilog = """
-.. |BoundClass| replace:: :class:`~bound_class.base.BoundClass`
+.. |BoundClass| replace:: :class:`~bound_class.core.base.BoundClass`
 """
 
 # intersphinx
@@ -107,8 +126,12 @@ numpydoc_xref_aliases = {
 # -- Project information ------------------------------------------------------
 
 # This does not *have* to match the package name, but typically does
-project = str(setup_cfg["name"])
-author = ", ".join(d["name"] for d in setup_cfg["authors"])
+project = "bound_class"
+author = ", ".join(
+    get_authors(
+        "core",
+    )
+)
 copyright = f"{datetime.datetime.now().year}, {author}"
 
 import_module(project)
@@ -156,7 +179,7 @@ html_sidebars = {"**": ["search-field.html", "sidebar-nav-bs.html"]}
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-html_title = f"{project} v{release}"
+html_title = "bound_class.[X]"
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = project + "doc"

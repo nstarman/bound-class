@@ -67,9 +67,9 @@ jobs:
     - name: Manual build
       if: matrix.language == 'cpp'
       run: |
-       pip install -U pip setuptools_scm wheel
-       pip install extension-helpers cython numpy pyerfa
-       python setup.py build_ext --inplace
+       pip install -U pip setuptools wheel
+       pip install extension-helpers
+       python -m pip install -e libs/core
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
