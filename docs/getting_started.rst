@@ -43,7 +43,7 @@ implementation is determined by which subclass is used. As a quick example:
 
 .. code-block:: python
 
-    >>> from bound_class.descriptors import InstanceDescriptor
+    >>> from bound_class.core.descriptors import InstanceDescriptor
     >>> class Example2:
     ...     attribute = InstanceDescriptor()
     >>> ex2 = Example2()

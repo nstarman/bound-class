@@ -10,10 +10,12 @@ demonstrations of functionality. This portion of the documentation should be
 treated like reference material.
 
 .. toctree::
+    :caption: Core
     :maxdepth: 1
 
-    src/base
-    src/descriptors
+    libs/core/index
+    libs/core/base
+    libs/core/descriptors
 
 
 Recent additions and changes

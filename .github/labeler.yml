@@ -15,19 +15,12 @@ testing:
   - .github/**/*.yml
   - .pep8speaks.yml
 
-external:
-  - astropy/extern/**/*
-  - cextern/**/*
-
 installation:
   - docs/install.rst
-  - pyproject.toml
+  - libs/**/*/pyproject.toml
   - setup.*
 
-Release:
-  - docs/development/releasing.rst
-
-base:
-  - src/bound_class/base.py
-  - src/bound_class/tests/test_base.py
-  - docs/src/base.rst
+core:
+  - libs/core/*
+  - libs/core/*
+  - docs/libs/core/*

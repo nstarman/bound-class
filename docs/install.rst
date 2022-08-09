@@ -13,7 +13,7 @@ To install the latest stable version using ``pip``, use
 
 .. code-block:: bash
 
-    python -m pip install bound_class
+    python -m pip install bound_class.core
 
 This is the recommended way to install ``bound-class``.
 
@@ -45,7 +45,7 @@ the cloned ``bound-class`` directory)
 
 .. code-block:: bash
 
-    python -m pip install .
+    python -m pip install [-e] .
 
 
 Python Dependencies

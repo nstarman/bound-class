@@ -47,4 +47,4 @@ jobs:
         run: python -m pip install --upgrade tox codecov
 
       - name: Run tests
-        run: tox ${{ matrix.toxargs }} -e ${{ matrix.toxenv }} -- ${{ matrix.toxposargs }}
+        run: tox ${{ matrix.toxargs }} -c ../../tests/tox.ini -e ${{ matrix.toxenv }} -- ${{ matrix.toxposargs }}
