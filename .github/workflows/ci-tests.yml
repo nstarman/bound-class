@@ -91,7 +91,7 @@ jobs:
 
       - name: Get changed files - infrastructure
         id: changed-files-infrastructure
-        uses: tj-actions/changed-files@v25
+        uses: tj-actions/changed-files@v29.0.2
         with:
           use_fork_point: "true"
           files: |
@@ -104,7 +104,7 @@ jobs:
 
       - name: Get changed files - core
         id: changed-files-core
-        uses: tj-actions/changed-files@v25
+        uses: tj-actions/changed-files@v29.0.2
         with:
           use_fork_point: "true"
           files: |
