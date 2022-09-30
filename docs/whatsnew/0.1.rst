@@ -34,7 +34,8 @@ used. As a quick example:
     ...     @property
     ...     def attribute(self):
     ...         bcb = BoundClass()
-    ...         bcb.__self__ = self
+    ...         # bcb.__self__ = self
+    ...         bcb._set__self__(self)
     ...         return bcb
     >>> ex2 = Example2()
     >>> ex2.attribute

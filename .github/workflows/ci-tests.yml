@@ -15,6 +15,10 @@ env:
   ARCH_ON_CI: "normal"
   IS_CRON: "false"
 
+env:
+  ARCH_ON_CI: "normal"
+  IS_CRON: "false"
+
 jobs:
   initial_checks:
     name: Mandatory checks before CI

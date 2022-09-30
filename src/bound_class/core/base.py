@@ -10,9 +10,10 @@
 
 from __future__ import annotations
 
-import sys
 import weakref
 from typing import Any, Callable, Generic, Protocol, TypeVar
+
+from mypy_extensions import mypyc_attr
 
 __all__ = ["BoundClass", "BoundClassRef"]
 
@@ -30,21 +31,7 @@ BndTo = TypeVar("BndTo")
 ##############################################################################
 
 
-if sys.version_info >= (3, 9):
-
-    class ReferenceTypeShim(weakref.ReferenceType[BndTo]):
-        """Python 3.9+ shim for `weakref.ReferenceType`."""
-
-else:  # TODO! remove when py3.9+
-
-    class ReferenceTypeShim(weakref.ReferenceType):
-        """Python 3.9+ shim for `weakref.ReferenceType`."""
-
-        def __class_getitem__(cls: type[ReferenceTypeShim], item: Any) -> type[ReferenceTypeShim]:  # noqa: ANN401
-            return cls
-
-
-class BoundClassRef(ReferenceTypeShim[BndTo]):
+class BoundClassRef(weakref.ReferenceType[BndTo]):
     """`weakref.ref` keeping a `BoundClass` connected to its referant.
 
     Attributes
@@ -100,6 +87,7 @@ class BoundClassRef(ReferenceTypeShim[BndTo]):
             bound._del__self__()  # noqa: SLF001
 
 
+@mypyc_attr(allow_interpreted_subclasses=True)
 class BoundClass(Generic[BndTo]):
     """Base class for a class bound to an instance of another class.
 

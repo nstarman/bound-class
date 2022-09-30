@@ -41,7 +41,7 @@ class InstanceDescriptor(BoundDescriptorBase[BndTo]):
 
         >>> ex = Example("ex_instance")
         >>> ex.attribute
-        ExampleInstanceDescriptor(store_in='__dict__')
+        ExampleInstanceDescriptor()
 
     What's special about |BoundClass|-derived descriptors is that their
     instances are bound to the instance of the enclosing class, not the class
@@ -148,7 +148,8 @@ class InstanceDescriptor(BoundDescriptorBase[BndTo]):
 
         # We set `__self__` on every call, since if one makes copies of objs,
         # 'dsc' will be copied as well, which will lose the reference.
-        dsc._set__self__(enclosing)  # noqa: SLF001
+        # dsc.__self__ = enclosing
+        dsc._set__self__(enclosing)
         # TODO? is it faster to check the reference then always make a new one.
 
         return dsc

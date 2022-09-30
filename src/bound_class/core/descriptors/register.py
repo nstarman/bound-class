@@ -109,8 +109,8 @@ def register_descriptor(
         # None -> self in unbound __init__
         ba = sig.bind_partial(None, **kwargs)
 
-        # make instance (skip 'self=None')
-        descr = descriptor(*ba.args[1:], **ba.kwargs)
+        descr = descriptor(*ba.args[1:], **ba.kwargs)  # make instance (skip 'self=None')
+        descr.__set_name__(descr, name)  # descriptor callback
 
         # Set the descriptor on the class.
         descr.__set_name__(descriptor, name)  # descriptor callback

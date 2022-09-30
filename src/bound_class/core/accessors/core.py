@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-from typing import Protocol, TypeVar, runtime_checkable
+from typing import Protocol, TypeVar
 
-# LOCAL
-from bound_class.core.base import BndTo, BoundClass, BoundClassLike
+from bound_class.core.base import BndTo, BoundClass, BoundClassRef
 
 __all__: list[str] = []
 
@@ -13,16 +12,18 @@ __all__: list[str] = []
 ABndTo = TypeVar("ABndTo", covariant=True)
 
 
-@runtime_checkable
-class AccessorLike(BoundClassLike[BndTo], Protocol):
+# @runtime_checkable  # TODO! https://github.com/mypyc/mypyc/issues/909
+class AccessorLike(Protocol[BndTo]):
     """Protocol for `Accessor`-like classes."""
 
-    __doc__: str | None  # noqa: A003
+    # __doc__: str | None  # TODO! https://github.com/mypyc/mypyc/issues/909
 
     def __init__(self, accessee: BndTo) -> None:
         ...
 
-    # from BoundClassLike
+    # from BoundClassLike (can't inherit b/c C)
+    __selfref__: BoundClassRef[BndTo] | None
+    __self__: BndTo
 
 
 class Accessor(BoundClass[BndTo]):
@@ -31,7 +32,7 @@ class Accessor(BoundClass[BndTo]):
     This class ensures the accessee is stored as a `weakref.ReferenceType` and
     correctly cleaned up. Classes do NOT need to be subclasses of this class to
     work with the accessor machinery. The only requirement is that they are
-    `AccessorLike` (a run-time-checkable `~typing.Protocool`).
+    ``AccessorLike`` (a `~typing.Protocool`).
 
     Parameters
     ----------
@@ -40,6 +41,7 @@ class Accessor(BoundClass[BndTo]):
     """
 
     def __init__(self, accessee: BndTo) -> None:
+        # self.__self__ = accessee
         self._set__self__(accessee)
 
     @property
