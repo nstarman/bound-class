@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Literal, NoReturn, TypeVar
 
 # LOCAL
-from bound_class.core.base import BndTo, BoundClass
+from bound_class.core.base import BndTo, BoundClass, BoundClassRef
 
 if TYPE_CHECKING:
     # THIRD PARTY
@@ -33,7 +33,7 @@ CacheLoc: TypeAlias = Literal["__dict__", "__cache__", None]
 ##############################################################################
 
 
-@dataclass
+@dataclass(frozen=True)
 class BoundDescriptorBase(BoundClass[BndTo]):
     """Base class for instance-level descriptors.
 
@@ -64,6 +64,10 @@ class BoundDescriptorBase(BoundClass[BndTo]):
     """
 
     store_in: Literal["__dict__", "_attrs_"] | None = "__dict__"
+
+    def __post_init__(self) -> None:
+        self.__selfref__: BoundClassRef[BndTo] | None
+        object.__setattr__(self, "__selfref__", None)
 
     # ===============================================================
     # Descriptor

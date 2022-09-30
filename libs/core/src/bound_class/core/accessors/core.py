@@ -1,47 +1,53 @@
 from __future__ import annotations
 
 # STDLIB
-from typing import Protocol, TypeVar, runtime_checkable
+from typing import Protocol, runtime_checkable
 
 # LOCAL
-from bound_class.core.base import BndTo, BoundClass, BoundClassLike
+from bound_class.core.base import BndTo, BoundClassLike
 
 __all__: list[str] = []
 
 
-ABndTo = TypeVar("ABndTo", covariant=True)
+class AccesorPropertyBaseLike(Protocol[BndTo]):
+    accessor_cls: type[AccessorLike[BndTo]] | type[AccessorLike[type[BndTo]]]
 
 
 @runtime_checkable
-class AccessorLike(BoundClassLike[BndTo], Protocol):
+class AccessorLike(Protocol[BndTo]):
     """Protocol for `Accessor`-like classes."""
 
-    __doc__: str | None
+    # __doc__: str | None
 
-    def __init__(self, accessee: BndTo) -> None:
+    def __init__(self, bound: BoundClassLike[BndTo], /) -> None:
         ...
 
-    # from BoundClassLike
-    # __selfref__: BoundClassRef[BndTo] | None
-    # __self__: BndTo
+    __wrapped__: BoundClassLike[BndTo]
+    # TODO! not sure if __wrapped__ is the right name
+
+    @property
+    def accessee(self) -> BndTo:
+        ...
 
 
-class Accessor(BoundClass[BndTo]):
-    """A convenience base class for acceessors.
+class Accessor(AccessorLike[BndTo]):
+    """A convenience base class for accessors.
 
-    This class ensures the accessee is stored as a `weakref.ReferenceType` and
-    correctly cleaned up. Classes do NOT need to be subclasses of this class to
-    work with the accessor machinery. The only requirement is that they are
-    `AccessorLike` (a run-time-checkable `~typing.Protocool`).
+
+
+    # This class ensures the accessee is stored as a `weakref.ReferenceType` and
+    # correctly cleaned up. Classes do NOT need to be subclasses of this class to
+    # work with the accessor machinery. The only requirement is that they are
+    # `AccessorLike` (a run-time-checkable `~typing.Protocool`).
 
     Parameters
     ----------
-    accessee : object
+    wrapper : object, positional-only
         The object to which this object is the accessor.
     """
 
-    def __init__(self, accessee: BndTo) -> None:
-        self.__self__ = accessee
+    def __init__(self, bound: BoundClassLike[BndTo], /) -> None:
+        self.__wrapped__ = bound
 
     @property
     def accessee(self) -> BndTo:
@@ -55,4 +61,4 @@ class Accessor(BoundClass[BndTo]):
 
             obj = accessor.accessee obj...
         """
-        return self.__self__
+        return self.__wrapped__.__self__

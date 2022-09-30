@@ -116,6 +116,22 @@ jobs:
         run: tox ${{ matrix.toxargs }} -c ../../tests/tox.ini -e ${{ matrix.toxenv }} -- ${{ matrix.toxposargs }}
         if: steps.changed-files-infrastructure.outputs.any_modified || steps.changed-files-core.outputs.any_modified == 'true'
 
+      # ------  IO  ------
+
+      - name: Get changed files - io
+        id: changed-files-io
+        uses: tj-actions/changed-files@v25
+        with:
+          use_fork_point: "true"
+          files: |
+            libs/io
+            docs/libs/io
+
+      - name: Run tests - io
+        working-directory: ./libs/io
+        run: tox ${{ matrix.toxargs }} -c ../../tests/tox.ini -e ${{ matrix.toxenv }} -- ${{ matrix.toxposargs }}
+        if: steps.changed-files-infrastructure.outputs.any_modified || steps.changed-files-io.outputs.any_modified == 'true'
+
       # ------------------
 
       - name: Upload coverage report to codecov

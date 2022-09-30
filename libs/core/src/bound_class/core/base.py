@@ -14,6 +14,7 @@ from __future__ import annotations
 import sys
 import weakref
 from typing import Any, Callable, Generic, Protocol, TypeVar
+from weakref import ReferenceType
 
 __all__ = ["BoundClass", "BoundClassRef"]
 
@@ -33,12 +34,12 @@ BndTo = TypeVar("BndTo")
 
 if sys.version_info >= (3, 9):
 
-    class ReferenceTypeShim(weakref.ReferenceType[BndTo]):
+    class ReferenceTypeShim(ReferenceType[BndTo]):
         pass
 
 else:  # TODO! remove when py3.9+
 
-    class ReferenceTypeShim(weakref.ReferenceType):
+    class ReferenceTypeShim(ReferenceType):
         def __class_getitem__(cls: type[ReferenceTypeShim], item: Any) -> type[ReferenceTypeShim]:
             return cls
 
@@ -70,8 +71,8 @@ class BoundClassRef(ReferenceTypeShim[BndTo]):
     # `__new__` is needed for type hint tracing because the superclass defines `__new__` without `bound`.
     def __new__(
         cls: type[Self],
-        ob: BndTo,
-        callback: Callable[[weakref.ReferenceType[BndTo]], Any] | None = None,
+        ob: BndTo | type[BndTo],
+        callback: Callable[[ReferenceType[BndTo] | ReferenceType[type[BndTo]]], Any] | None = None,
         *,
         bound: BoundClass[BndTo],
     ) -> Self:
@@ -80,8 +81,8 @@ class BoundClassRef(ReferenceTypeShim[BndTo]):
 
     def __init__(
         self,
-        ob: BndTo,
-        callback: Callable[[weakref.ReferenceType[BndTo]], Any] | None = None,
+        ob: BndTo | type[BndTo],
+        callback: Callable[[ReferenceType[BndTo] | ReferenceType[type[BndTo]]], Any] | None = None,
         *,
         bound: BoundClass[BndTo],
     ) -> None:
@@ -99,7 +100,7 @@ class BoundClassRef(ReferenceTypeShim[BndTo]):
 
 
 class BoundClass(Generic[BndTo]):
-    """Base class for a class bound to an instance of another class.
+    """Base class for a class bound to another class.
 
     Attributes
     ----------
@@ -157,10 +158,8 @@ class BoundClass(Generic[BndTo]):
         ex2 has been deleted
     """
 
-    __selfref__: BoundClassRef[BndTo] | None
-
     @property
-    def __self__(self) -> BndTo:
+    def __self__(self) -> BndTo | type[BndTo]:
         """Return object to which this one is bound.
 
         Returns
@@ -173,6 +172,7 @@ class BoundClass(Generic[BndTo]):
             If no referant was assigned, if it was deleted, or if it was
             de-refenced (e.g. by ``del self.__self__``).
         """
+        __selfref__: BoundClassRef[BndTo] | None
         if hasattr(self, "__selfref__") and isinstance(self.__selfref__, BoundClassRef):
             boundto = self.__selfref__()  # dereference
             if boundto is not None:
@@ -183,9 +183,9 @@ class BoundClass(Generic[BndTo]):
         raise ReferenceError("no weakly-referenced object")
 
     @__self__.setter
-    def __self__(self, value: BndTo) -> None:
+    def __self__(self, value: BndTo | type[BndTo]) -> None:
         # Set the reference.
-        self.__selfref__: BoundClassRef[BndTo] | None
+        self.__selfref__: BoundClassRef[BndTo] | BoundClassRef[type[BndTo]] | None
         self.__selfref__ = BoundClassRef(value, bound=self)
         # Note: we use ReferenceType over ProxyType b/c the latter fails ``is``
         # and ``issubclass`` checks. ProxyType autodetects and cleans up
@@ -199,5 +199,6 @@ class BoundClass(Generic[BndTo]):
 
 
 class BoundClassLike(Protocol[BndTo]):
-    __selfref__: BoundClassRef[BndTo] | None
-    __self__: BndTo
+    __selfref__: BoundClassRef[BndTo] | BoundClassRef[type[BndTo]] | None
+    __self__: BndTo | type[BndTo]
+    _enclosing_attr: str
