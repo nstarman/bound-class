@@ -1,5 +1,4 @@
 # STDLIB
-import copy
 from weakref import ReferenceType
 
 # THIRD PARTY
@@ -33,9 +32,9 @@ def unbound(bound_cls) -> object:
 
 
 @pytest.fixture
-def bound(unbound, boundto) -> object:
-    bound = copy.deepcopy(unbound)  # TODO? necessary
-    bound.__self__ = boundto
+def bound(bound_cls, boundto) -> object:
+    bound = bound_cls()  # TODO? necessary
+    bound._set__self__(boundto)
     return bound
 
 
@@ -60,7 +59,7 @@ def test_set_connection(unbound, boundto):
         unbound.__self__
 
     # Set connection
-    unbound.__self__ = boundto
+    unbound._set__self__(boundto)
 
     # Test new connection
     assert unbound.__self__ is boundto
@@ -71,11 +70,11 @@ def test_set_connection(unbound, boundto):
 
 def test_delete_connection(unbound, boundto):
     # Make bond
-    unbound.__self__ = boundto
+    unbound._set__self__(boundto)
     assert unbound.__self__ is boundto  # ensure connected
 
     # Delete and test
-    del unbound.__self__
+    unbound._del__self__()
 
     with pytest.raises(ReferenceError, match="no weakly-referenced object"):
         unbound.__self__
@@ -88,7 +87,7 @@ def test_boundto_deleted(unbound, boundto_cls):
     boundto = boundto_cls()
 
     # Make bond
-    unbound.__self__ = boundto
+    unbound._set__self__(boundto)
     assert unbound.__self__ is boundto  # ensure connected
 
     # Delete and test
@@ -109,7 +108,7 @@ def test_bound_not_alive_from_reference(bound_cls, boundto):
     """
     # need to make here for proper garbage collection
     bound = bound_cls()
-    bound.__self__ = boundto
+    bound._set__self__(boundto)
 
     boundref = bound.__selfref__  # stays alive
     assert isinstance(boundref, BoundClassRef)
