@@ -95,7 +95,8 @@ class BoundClassRef(ReferenceTypeShim[BndTo]):
         """Callback for finalizer that sets ``bound.__selfref__ = None``."""
         bound = self._bound_ref()
         if bound is not None:  # check that reference to bound is alive.
-            del bound.__self__
+            # del bound.__self__
+            bound._del__self__()
 
 
 class BoundClass(Generic[BndTo]):
@@ -137,7 +138,8 @@ class BoundClass(Generic[BndTo]):
         ...     @property
         ...     def attribute(self):
         ...         bcb = BoundClass()
-        ...         bcb.__self__ = self
+        ...         # bcb.__self__ = self
+        ...         bcb._set__self__(self)
         ...         return bcb
         >>> ex2 = Example2()
         >>> ex2.attribute
@@ -156,8 +158,6 @@ class BoundClass(Generic[BndTo]):
         ... except ReferenceError: print("ex2 has been deleted")
         ex2 has been deleted
     """
-
-    __selfref__: BoundClassRef[BndTo] | None
 
     @property
     def __self__(self) -> BndTo:
@@ -182,20 +182,23 @@ class BoundClass(Generic[BndTo]):
 
         raise ReferenceError("no weakly-referenced object")
 
-    @__self__.setter
-    def __self__(self, value: BndTo) -> None:
+    # TODO! https://github.com/python/mypy/issues/13231
+    # @__self__.setter
+    # def __self__(self, value: BndTo) -> None:
+    def _set__self__(self, value: BndTo) -> None:
         # Set the reference.
         self.__selfref__: BoundClassRef[BndTo] | None
-        self.__selfref__ = BoundClassRef(value, bound=self)
+        object.__setattr__(self, "__selfref__", BoundClassRef(value, bound=self))
         # Note: we use ReferenceType over ProxyType b/c the latter fails ``is``
         # and ``issubclass`` checks. ProxyType autodetects and cleans up
         # deletion of the referent, which ReferenceType does not, so we need a
         # custom ReferenceType subclass to emulate this behavior.
 
-    @__self__.deleter
-    def __self__(self) -> None:
+    # @__self__.deleter
+    # def __self__(self) -> None:
+    def _del__self__(self) -> None:
         # Romove reference without deleting the attribute.
-        self.__selfref__ = None
+        object.__setattr__(self, "__selfref__", None)
 
 
 class BoundClassLike(Protocol[BndTo]):
