@@ -41,7 +41,7 @@ class Accessor(BoundClass[BndTo]):
     """
 
     def __init__(self, accessee: BndTo) -> None:
-        self.__self__ = accessee
+        self._set__self__(accessee)
 
     @property
     def accessee(self) -> BndTo:

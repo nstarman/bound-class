@@ -15,7 +15,7 @@ from bound_class.core.descriptors.base import BoundDescriptorBase
 
 # from typing_extensions import Self  # TODO! use when mypy doesn't complain
 
-__all__ = ["InstanceDescriptor"]
+__all__: list[str] = []
 
 
 ##############################################################################
@@ -126,7 +126,8 @@ class InstanceDescriptor(BoundDescriptorBase[BndTo]):
 
         # We set `__self__` on every call, since if one makes copies of objs,
         # 'dsc' will be copied as well, which will lose the reference.
-        dsc.__self__ = enclosing
+        # dsc.__self__ = enclosing
+        dsc._set__self__(enclosing)
         # TODO? is it faster to check the reference then always make a new one.
 
         return dsc
