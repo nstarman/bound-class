@@ -1,6 +1,7 @@
 name: Cron CI
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: "0 10 * * 1"  # Mondays @ 6AM Eastern
   pull_request:
