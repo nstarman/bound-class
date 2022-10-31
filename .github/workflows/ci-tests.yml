@@ -75,7 +75,7 @@ jobs:
           fetch-depth: 0
 
       - name: Get Current Pull Request
-        uses: 8BitJonny/gh-get-current-pr@2.1.2
+        uses: 8BitJonny/gh-get-current-pr@2.1.3
         id: pr
         with:
           github-token: ${{ github.token }}
