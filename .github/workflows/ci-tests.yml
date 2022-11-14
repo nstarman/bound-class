@@ -112,9 +112,9 @@ jobs:
             docs/libs/core
 
       - name: Run tests - core
+        if: steps.changed-files-infrastructure.outputs.any_modified || steps.changed-files-core.outputs.any_modified == 'true'
         working-directory: ./libs/core
         run: tox ${{ matrix.toxargs }} -c ../../tests/tox.ini -e ${{ matrix.toxenv }} -- ${{ matrix.toxposargs }}
-        if: steps.changed-files-infrastructure.outputs.any_modified || steps.changed-files-core.outputs.any_modified == 'true'
 
       # ------------------
 
@@ -123,6 +123,3 @@ jobs:
         uses: codecov/codecov-action@v3
         with:
           file: ./coverage.xml
-
-# TODO!
-# parallel_and_32bit:
