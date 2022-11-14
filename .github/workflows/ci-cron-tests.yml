@@ -45,5 +45,6 @@ jobs:
       - name: Install Python dependencies
         run: python -m pip install --upgrade tox codecov
 
-      - name: Run tests
+      - name: Run tests - core
+        working-directory: ./libs/core
         run: tox ${{ matrix.toxargs }} -c ../../tests/tox.ini -e ${{ matrix.toxenv }} -- ${{ matrix.toxposargs }}
