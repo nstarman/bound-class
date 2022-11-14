@@ -15,7 +15,7 @@ jobs:
   tests:
     name: Python ${{ matrix.python }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    if: (github.event_name == 'schedule' || contains(github.event.pull_request.labels.*.name, 'Extra CI'))
+    if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'Extra CI'))
     strategy:
       fail-fast: true
       matrix:
