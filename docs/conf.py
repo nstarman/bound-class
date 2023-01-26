@@ -1,6 +1,6 @@
-# Load all of the global Astropy configuration
+"""Sphinx configuration file for the bound_class package."""
+
 # STDLIB
-import datetime
 import pathlib
 import sys
 from importlib import import_module
@@ -17,7 +17,6 @@ def get_authors(*pkg_names: str) -> set[str]:
     set[str]
         The authors.
     """
-
     authors: set[str] = set()
     libs = pathlib.Path(__file__).parent.parent / "libs"
 
@@ -45,7 +44,6 @@ templates_path = ["_templates"]
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
-# source_suffix = ['.rst', '.md']
 source_suffix = ".rst"
 
 # Sphinx extensions
@@ -130,9 +128,9 @@ project = "bound_class"
 author = ", ".join(
     get_authors(
         "core",
-    )
+    ),
 )
-copyright = f"{datetime.datetime.now().year}, {author}"
+copyright = f"2022, {author}"  # noqa: A001
 
 import_module(project)
 package = sys.modules[project]
@@ -147,18 +145,10 @@ release = package.__version__
 
 html_theme = "pydata_sphinx_theme"
 
-# html_logo = '_static/<X>.png'
 
-# html_theme_options = {
-#     "logo_link": "index",
 #     "icon_links": [
-#         {
-#             "name": "GitHub",
-#             "url": "",
-#             "icon": "fab fa-github-square",
 #         },
 #     ],
-# }
 
 # Custom sidebar templates, maps document names to template names.
 html_sidebars = {"**": ["search-field.html", "sidebar-nav-bs.html"]}
@@ -166,16 +156,13 @@ html_sidebars = {"**": ["search-field.html", "sidebar-nav-bs.html"]}
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
-# html_favicon = ''
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
-# html_favicon = str(docs_root / '_static' / 'X.ico')
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
-# html_last_updated_fmt = ''
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".

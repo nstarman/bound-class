@@ -1,3 +1,5 @@
+"""Descriptors."""
+
 # LOCAL
 from bound_class.core.descriptors.bound import BoundDescriptor
 from bound_class.core.descriptors.instance import InstanceDescriptor

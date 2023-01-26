@@ -1,3 +1,5 @@
+"""Descriptor for accessors."""
+
 from __future__ import annotations
 
 # STDLIB
@@ -64,9 +66,11 @@ class AccessorProperty(BoundDescriptorBase[BndTo]):
         ...
 
     def __get__(
-        self, enclosing: BndTo | None, _: None | type[BndTo]
+        self,
+        enclosing: BndTo | None,
+        _: None | type[BndTo],
     ) -> AccessorLike[BndTo] | type[AccessorLike[BndTo]]:
-        assert self.accessor_cls is not None  # TODO! rm py3.10+
+        assert self.accessor_cls is not None  # TODO! rm py3.10+  # noqa: S101
 
         # Opt 1) accessed from the class, so return the accessor class.
         if enclosing is None:
@@ -85,11 +89,12 @@ class AccessorProperty(BoundDescriptorBase[BndTo]):
                 # store on enclosing instance
                 cache[self._enclosing_attr] = accesssor
             elif not isinstance(obj, self.accessor_cls):
-                raise TypeError(f"accessor must be type <{type(self)}> not <{type(obj)}>")
-            else:
+                msg = f"accessor must be type <{type(self)}> not <{type(obj)}>"
+                raise TypeError(msg)
+            else:  # noqa: RET506
                 accesssor = obj
 
         return accessor
 
-    def __set__(self, _: str, __: Any) -> NoReturn:
+    def __set__(self, _: str, __: object) -> NoReturn:
         raise AttributeError  # TODO! useful error message

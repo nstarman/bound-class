@@ -8,8 +8,12 @@ on:
     - '*'
   pull_request:
 
-  # Allowed to run this workflow manually from the Actions tab
-  workflow_dispatch:
+permissions:
+  contents: read
+
+env:
+  ARCH_ON_CI: "normal"
+  IS_CRON: "false"
 
 jobs:
   initial_checks:
@@ -17,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Check base branch
-      uses: actions/github-script@v6
+      uses: actions/github-script@v3
       if: github.event_name == 'pull_request'
       with:
         script: |
@@ -35,91 +39,19 @@ jobs:
           }
 
   tests:
-    name: ${{ matrix.name }}
-    runs-on: ${{ matrix.os }}
-    strategy:
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
+    with:
+      envs: |
+        - linux: py38-test-cov
+        - linux: py39-test-oldestdeps-alldeps-cov-clocale
+        - linux: py310-test-alldeps
+          toxargs: '-v --develop'
+        - linux: py311-test-cov
+        - windows: py310-test-alldeps
+        - macos: py310-test-alldeps
+
+      conda: true
+      coverage: codecov
       fail-fast: true
-      matrix:
-        include:
-
-          - name: Python 3.10 with minimal dependencies and coverage
-            os: ubuntu-latest
-            python: '3.10'
-            toxenv: py310-test-cov
-
-          - name: Python 3.9 with all optional dependencies
-            os: ubuntu-latest
-            python: 3.9
-            toxenv: py39-test-alldeps
-
-          - name: Python 3.8 with oldest supported version of all dependencies
-            os: ubuntu-latest
-            python: 3.8
-            toxenv: py38-test-oldestdeps
-
-          # Mac and Windows:
-          - name: Python 3.9 standard tests (macOS)
-            os: macos-latest
-            python: 3.9
-            toxenv: py39-test
-
-          - name: Python 3.9 standard tests (Windows)
-            os: windows-latest
-            python: 3.9
-            toxenv: py39-test
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Get Current Pull Request
-        uses: 8BitJonny/gh-get-current-pr@2.2.0
-        id: pr
-        with:
-          github-token: ${{ github.token }}
-          filterOutClosed: true
-
-      - name: Set up Python on ${{ matrix.os }}
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python }}
-
-      - name: Install Python dependencies
-        run: python -m pip install --upgrade tox codecov
-
-      - name: Get changed files - infrastructure
-        id: changed-files-infrastructure
-        uses: tj-actions/changed-files@v35.4.4
-        with:
-          use_fork_point: "true"
-          files: |
-            .github/workflows/ci-*.yml
-            pre-commit-config.yaml
-            pyproject.toml
-            tests/tox.ini
-
-      # ------ CORE ------
-
-      - name: Get changed files - core
-        id: changed-files-core
-        uses: tj-actions/changed-files@v35.4.4
-        with:
-          use_fork_point: "true"
-          files: |
-            libs/core
-            docs/libs/core
-
-      - name: Run tests - core
-        if: steps.changed-files-infrastructure.outputs.any_modified || steps.changed-files-core.outputs.any_modified == 'true'
-        working-directory: ./libs/core
-        run: tox ${{ matrix.toxargs }} -c ../../tests/tox.ini -e ${{ matrix.toxenv }} -- ${{ matrix.toxposargs }}
-
-      # ------------------
-
-      - name: Upload coverage report to codecov
-        if: ${{ contains(matrix.toxenv,'-cov') }}
-        uses: codecov/codecov-action@v3
-        with:
-          file: ./coverage.xml
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

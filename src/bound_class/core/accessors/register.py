@@ -1,3 +1,5 @@
+"""Register an accessor class on a class."""
+
 from __future__ import annotations
 
 # STDLIB
@@ -26,6 +28,24 @@ def register_accessor(
     *,
     store_in: Literal["__dict__", "_attrs_"] | None = "__dict__",
 ) -> Callable[[type[AccessorLike[BndTo]]], type[AccessorLike[BndTo]]]:
+    """Decorator to register an accessor class.
+
+    Parameters
+    ----------
+    cls : type[BndTo]
+        The class to which to add the accessor.
+    name : str
+        The name of the accessor on `cls`.
+    store_in : Literal["__dict__", "_attrs_"] | None, optional
+        The attribute of the class to which to store the accessor instance. By
+        default, this is ``"__dict__"``.
+
+    Returns
+    -------
+    Callable[[type[AccessorLike[BndTo]]], type[AccessorLike[BndTo]]]
+        The decorator.
+    """
+
     def decorator(accessor_cls: type[AccessorLike[BndTo]]) -> type[AccessorLike[BndTo]]:
         # TODO! validation that ``accessor_cls``
 

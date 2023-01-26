@@ -37,7 +37,7 @@ def test_register_cls():
             return sqrt(self.enclosing.x**2 + self.enclosing.y**2)
 
     assert hasattr(Vector, "radial")
-    assert isinstance(getattr(Vector, "radial"), Radial)
+    assert isinstance(Vector.radial, Radial)
 
     # test that it works
     v = Vector(3.0, 4.0)
