@@ -11,40 +11,70 @@ on:
       - synchronize
       - labeled
 
+permissions:
+  contents: read
+
+env:
+  ARCH_ON_CI: "normal"
+  IS_CRON: "false"
+
 jobs:
+
   tests:
-    name: Python ${{ matrix.python }} on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
     if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'Extra CI'))
-    strategy:
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
+    with:
+      envs: |
+        - linux: py39-test
+        - linux: py310-test
+        - linux: py311-test
+        - macos: py39-test
+        - macos: py310-test
+        - macos: py311-test
+        - windows: py39-test
+        - windows: py310-test
+        - windows: py311-test
+
+      conda: true
       fail-fast: true
-      matrix:
-        os: [ubuntu-latest, macos-latest] # TODO: re-enable windows-latest
-        python: ['3.8', '3.9', '3.10']
-        include:
-          - python: '3.10'
-            toxenv: py310-test-cov
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-          - python: '3.9'
-            toxenv: py39-test-cov
 
-          - python: '3.8'
-            toxenv: py38-test-alldeps
+# jobs:
+#   tests:
+#     name: Python ${{ matrix.python }} on ${{ matrix.os }}
+#     runs-on: ${{ matrix.os }}
+#     if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'Extra CI'))
+#     strategy:
+#       fail-fast: true
+#       matrix:
+#         os: [ubuntu-latest, macos-latest] # TODO: re-enable windows-latest
+#         python: ['3.8', '3.9', '3.10']
+#         include:
+#           - python: '3.10'
+#             toxenv: py310-test-cov
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+#           - python: '3.9'
+#             toxenv: py39-test-cov
 
-      - name: Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python }}
+#           - python: '3.8'
+#             toxenv: py38-test-alldeps
 
-      - name: Install Python dependencies
-        run: python -m pip install --upgrade tox codecov
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v3
+#         with:
+#           fetch-depth: 0
 
-      - name: Run tests - core
-        working-directory: ./libs/core
-        run: tox ${{ matrix.toxargs }} -c ../../tests/tox.ini -e ${{ matrix.toxenv }} -- ${{ matrix.toxposargs }}
+#       - name: Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}
+#         uses: actions/setup-python@v4
+#         with:
+#           python-version: ${{ matrix.python }}
+
+#       - name: Install Python dependencies
+#         run: python -m pip install --upgrade tox codecov
+
+#       - name: Run tests - core
+#         working-directory: ./libs/core
+#         run: tox ${{ matrix.toxargs }} -c ../../tests/tox.ini -e ${{ matrix.toxenv }} -- ${{ matrix.toxposargs }}
