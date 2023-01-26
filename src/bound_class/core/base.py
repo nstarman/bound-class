@@ -34,12 +34,14 @@ BndTo = TypeVar("BndTo")
 if sys.version_info >= (3, 9):
 
     class ReferenceTypeShim(weakref.ReferenceType[BndTo]):
-        pass
+        """Python 3.9+ shim for `weakref.ReferenceType`."""
 
 else:  # TODO! remove when py3.9+
 
     class ReferenceTypeShim(weakref.ReferenceType):
-        def __class_getitem__(cls: type[ReferenceTypeShim], item: Any) -> type[ReferenceTypeShim]:
+        """Python 3.9+ shim for `weakref.ReferenceType`."""
+
+        def __class_getitem__(cls: type[ReferenceTypeShim], item: Any) -> type[ReferenceTypeShim]:  # noqa: ANN401
             return cls
 
 
@@ -68,20 +70,20 @@ class BoundClassRef(ReferenceTypeShim[BndTo]):
     __slots__ = ("_bound_ref",)
 
     # `__new__` is needed for type hint tracing because the superclass defines `__new__` without `bound`.
-    def __new__(
+    def __new__(  # noqa: D102
         cls: type[Self],
         ob: BndTo,
         callback: Callable[[weakref.ReferenceType[BndTo]], Any] | None = None,
         *,
-        bound: BoundClass[BndTo],
+        bound: BoundClass[BndTo],  # noqa: ARG003
     ) -> Self:
-        ref: Self = super().__new__(cls, ob, callback)  # type: ignore
+        ref: Self = super().__new__(cls, ob, callback)  # type: ignore[misc]
         return ref
 
     def __init__(
         self,
         ob: BndTo,
-        callback: Callable[[weakref.ReferenceType[BndTo]], Any] | None = None,
+        _: Callable[[weakref.ReferenceType[BndTo]], Any] | None = None,
         *,
         bound: BoundClass[BndTo],
     ) -> None:
@@ -178,9 +180,11 @@ class BoundClass(Generic[BndTo]):
             if boundto is not None:
                 return boundto
 
-            raise ReferenceError("weakly-referenced object no longer exists")
+            msg = "weakly-referenced object no longer exists"
+            raise ReferenceError(msg)
 
-        raise ReferenceError("no weakly-referenced object")
+        msg = "no weakly-referenced object"
+        raise ReferenceError(msg)
 
     # TODO! https://github.com/python/mypy/issues/13231
     # @__self__.setter
@@ -202,5 +206,7 @@ class BoundClass(Generic[BndTo]):
 
 
 class BoundClassLike(Protocol[BndTo]):
+    """Protocol for classes that behave like `BoundClass`."""
+
     __selfref__: BoundClassRef[BndTo] | None
     __self__: BndTo

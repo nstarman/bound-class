@@ -10,28 +10,27 @@ from bound_class.core.base import BoundClass, BoundClassRef
 #####################################################################
 
 
-@pytest.fixture
+@pytest.fixture()
 def bound_cls() -> type:
     return BoundClass
 
 
-@pytest.fixture
+@pytest.fixture()
 def boundto_cls() -> type:
-    Enclosing = type("Enclosing", (object,), {})
-    return Enclosing
+    return type("Enclosing", (object,), {})
 
 
-@pytest.fixture
+@pytest.fixture()
 def boundto(boundto_cls) -> object:
     return boundto_cls()
 
 
-@pytest.fixture
+@pytest.fixture()
 def unbound(bound_cls) -> object:
     return bound_cls()
 
 
-@pytest.fixture
+@pytest.fixture()
 def bound(bound_cls, boundto) -> object:
     bound = bound_cls()  # TODO? necessary
     bound._set__self__(boundto)
@@ -104,7 +103,7 @@ def test_bound_not_alive_from_reference(bound_cls, boundto):
     A bound-class holds a reference to the referent. The reference itself holds
     a reference to the bound-class so that if the referent is deleted, the
     attribution on the bound class is cleaned up. This tests that the cleanup
-    works as
+    works as.
     """
     # need to make here for proper garbage collection
     bound = bound_cls()
@@ -118,6 +117,6 @@ def test_bound_not_alive_from_reference(bound_cls, boundto):
     del bound
 
     with pytest.raises(UnboundLocalError):  # garbage collected
-        bound  # type: ignore
+        bound
 
     assert boundref._bound_ref() is None

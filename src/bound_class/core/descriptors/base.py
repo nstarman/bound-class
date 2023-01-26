@@ -72,7 +72,8 @@ class BoundDescriptorBase(BoundClass[BndTo]):
     # ===============================================================
     # Descriptor
 
-    def __set_name__(self, _: Any, name: str) -> None:
+    def __set_name__(self, _: Any, name: str) -> None:  # noqa: ANN401
+        """Store the name of the attribute on the enclosing object."""
         # Store the name of the attribute on the enclosing object
         self._enclosing_attr: str
         object.__setattr__(self, "_enclosing_attr", name)
@@ -85,7 +86,8 @@ class BoundDescriptorBase(BoundClass[BndTo]):
     # ):
     #     ...
 
-    def __set__(self, _: str, __: Any) -> NoReturn:
+    def __set__(self, _: str, __: object) -> NoReturn:
+        """Raise an error when trying to set the value."""
         raise AttributeError  # TODO! useful error message
 
     # ===============================================================

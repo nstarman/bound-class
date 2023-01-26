@@ -1,3 +1,5 @@
+"""Core functionality for accessors."""
+
 from __future__ import annotations
 
 # STDLIB
@@ -16,14 +18,12 @@ ABndTo = TypeVar("ABndTo", covariant=True)
 class AccessorLike(BoundClassLike[BndTo], Protocol):
     """Protocol for `Accessor`-like classes."""
 
-    __doc__: str | None
+    __doc__: str | None  # noqa: A003
 
     def __init__(self, accessee: BndTo) -> None:
         ...
 
     # from BoundClassLike
-    # __selfref__: BoundClassRef[BndTo] | None
-    # __self__: BndTo
 
 
 class Accessor(BoundClass[BndTo]):

@@ -1,3 +1,5 @@
+"""Register a descriptor class on a class."""
+
 from __future__ import annotations
 
 # STDLIB
@@ -20,7 +22,9 @@ class DescriptorRegistrationWarning(Warning):
 
 
 def register_descriptor(
-    cls: type[BndTo], name: str, **kwargs: Any
+    cls: type[BndTo],
+    name: str,
+    **kwargs: Any,  # noqa: ANN401
 ) -> Callable[[type[BoundDescriptorBase[BndTo]]], type[BoundDescriptorBase[BndTo]]]:
     """Decorator to register a descriptor class.
 
@@ -31,7 +35,7 @@ def register_descriptor(
     name : str
         The name of the descriptor on `cls`.
     **kwargs : Any
-        Arguments passed to
+        Arguments passed to the descriptor class.
 
     Examples
     --------
@@ -98,9 +102,8 @@ def register_descriptor(
 
         # Make the descriptor instance:
         # opt 1) instantiate class
-        if not TYPE_CHECKING:  # TODO! unnecessary with mypyc
-            if not issubclass(descriptor, BoundDescriptorBase):
-                raise ValueError  # TODO! error message
+        if not TYPE_CHECKING and not issubclass(descriptor, BoundDescriptorBase):
+            raise ValueError  # TODO! error message
 
         # correctly parse args vs kwargs
         sig = inspect.signature(descriptor.__init__)
@@ -111,7 +114,7 @@ def register_descriptor(
         descr = descriptor(*ba.args[1:], **ba.kwargs)
 
         # Set the descriptor on the class.
-        descr.__set_name__(descr, name)  # descriptor callback
+        descr.__set_name__(descriptor, name)  # descriptor callback
         setattr(cls, name, descr)  # attach to class
 
         return descriptor

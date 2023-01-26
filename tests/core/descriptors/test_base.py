@@ -10,30 +10,28 @@ from bound_class.core.descriptors.base import BoundDescriptorBase
 
 
 class BoundDescriptorBase_Test(metaclass=ABCMeta):
-    @pytest.fixture
+    @pytest.fixture()
     @abstractmethod
     def descr_cls(self) -> type:
         return BoundDescriptorBase
 
-    @pytest.fixture
+    @pytest.fixture()
     def encl_attr(self) -> str:
         return "attr"
 
-    @pytest.fixture
+    @pytest.fixture()
     def encl_cls(self, descr_cls, encl_attr) -> type:
-        Enclosing = type("Enclosing", (object,), {encl_attr: descr_cls()})
+        return type("Enclosing", (object,), {encl_attr: descr_cls()})
 
-        return Enclosing
-
-    @pytest.fixture
+    @pytest.fixture()
     def descr_on_cls(self, encl_cls, encl_attr) -> object:
         return vars(encl_cls)[encl_attr]
 
-    @pytest.fixture
+    @pytest.fixture()
     def enclosing(self, encl_cls) -> object:
         return encl_cls()
 
-    @pytest.fixture
+    @pytest.fixture()
     def descr_on_inst(self, enclosing, encl_attr) -> object:
         return getattr(enclosing, encl_attr)
 
@@ -77,5 +75,5 @@ class BoundDescriptorBase_Test(metaclass=ABCMeta):
     # ===============================================================
 
     def can_test_membership(self, encl_cls, encl_attr):
-        """Can test that a descriptor is on the class"""
+        """Can test that a descriptor is on the class."""
         hasattr(encl_cls, encl_attr)
