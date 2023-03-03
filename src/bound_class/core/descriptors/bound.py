@@ -5,7 +5,6 @@
 
 from __future__ import annotations
 
-# STDLIB
 from dataclasses import dataclass, replace
 from typing import Any, MutableMapping, overload
 

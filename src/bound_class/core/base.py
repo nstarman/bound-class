@@ -10,7 +10,6 @@
 
 from __future__ import annotations
 
-# STDLIB
 import sys
 import weakref
 from typing import Any, Callable, Generic, Protocol, TypeVar

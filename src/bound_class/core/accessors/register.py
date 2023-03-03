@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-# STDLIB
 import warnings
 from typing import TYPE_CHECKING, Callable, Literal
 
