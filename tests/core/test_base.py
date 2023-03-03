@@ -1,4 +1,3 @@
-# STDLIB
 from weakref import ReferenceType
 
 # THIRD PARTY

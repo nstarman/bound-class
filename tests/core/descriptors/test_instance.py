@@ -1,5 +1,3 @@
-# STDLIB
-
 # THIRD PARTY
 import pytest
 from bound_class.core.descriptors import InstanceDescriptor

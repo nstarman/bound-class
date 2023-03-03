@@ -1,6 +1,5 @@
 """Sphinx configuration file for the bound_class package."""
 
-# STDLIB
 import pathlib
 import sys
 from importlib import import_module

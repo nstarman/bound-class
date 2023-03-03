@@ -172,4 +172,4 @@ ignore = [
 
 [tool.ruff.per-file-ignores]
 "docs/*.py" = ["INP001"]
-"tests/*.py" = ["ANN", "D", "N8", "PLR2004", "S101"]
+"tests/*.py" = ["ANN", "D", "N8", "PLR2004", "S101", "SLF001"]

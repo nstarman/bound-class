@@ -9,12 +9,13 @@ packagename.test
 
 from __future__ import annotations
 
-# STDLIB
 import pathlib
+from typing import TYPE_CHECKING
 
-# THIRD PARTY
-import pytest
 from pytest_astropy_header.display import PYTEST_HEADER_MODULES, TESTED_VERSIONS
+
+if TYPE_CHECKING:
+    import pytest
 
 
 def pytest_configure(config: pytest.Config) -> None:
@@ -32,7 +33,6 @@ def pytest_configure(config: pytest.Config) -> None:
     # tests.
     PYTEST_HEADER_MODULES.pop("Pandas", None)
 
-    # STDLIB
     from importlib.metadata import version
 
     packagename = pathlib.Path(__file__).parent.name
