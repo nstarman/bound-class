@@ -143,7 +143,7 @@ class InstanceDescriptor(BoundDescriptorBase[BndTo]):
             elif not isinstance(obj, type(self)):
                 msg = f"descriptor must be type <{type(self)}> not <{type(obj)}>"
                 raise TypeError(msg)
-            else:  # noqa: RET506
+            else:
                 dsc = obj
 
         # We set `__self__` on every call, since if one makes copies of objs,
