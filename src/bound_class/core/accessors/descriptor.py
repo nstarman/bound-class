@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+# STDLIB
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any, Literal, MutableMapping, NoReturn, overload
 
 # LOCAL
@@ -33,7 +34,7 @@ class AccessorProperty(BoundDescriptorBase[BndTo]):
     # See https://github.com/pandas-dev/pandas/blob/main/pandas/_libs/properties.pyx for a CPython implementation
 
     accessor_cls: type[AccessorLike[BndTo]] | None = None
-    store_in: Literal["__dict__", "_attrs_"] | None = "__dict__"
+    store_in: Literal["__dict__", "_attrs_"] | None = field(default="__dict__", repr=False)
 
     # TODO! not need this in py3.9 when have improved dataclass
     def __init__(
@@ -51,7 +52,8 @@ class AccessorProperty(BoundDescriptorBase[BndTo]):
             raise TypeError
 
         # Set the docstring
-        object.__setattr__(self, "__doc__", self.accessor_cls.__doc__)
+        object.__setattr__(self, "__doc__", getattr(self.accessor_cls, "__doc__", None))
+        # TODO! getattr b/c https://github.com/mypyc/mypyc/issues/909
 
     # ===============================================================
     # Descriptor

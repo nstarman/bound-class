@@ -142,7 +142,7 @@ release = package.__version__
 
 # -- Options for HTML output ---------------------------------------------------
 
-html_theme = "pydata_sphinx_theme"
+html_theme = "furo"
 
 
 #     "icon_links": [

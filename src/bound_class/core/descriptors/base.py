@@ -1,30 +1,13 @@
 """Descriptors on the instance, not the class."""
 
-##############################################################################
-# IMPORTS
-
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, Literal, NoReturn, TypeVar
+from dataclasses import dataclass, field
+from typing import Any, Literal, NoReturn
 
-# LOCAL
 from bound_class.core.base import BndTo, BoundClass, BoundClassRef
 
-if TYPE_CHECKING:
-    # THIRD PARTY
-    from typing_extensions import TypeAlias
-
-
 __all__: list[str] = []
-
-
-##############################################################################
-# PARAMETERS
-
-Self = TypeVar("Self")  # mypy not yet compatible with Self
-
-CacheLoc: TypeAlias = Literal["__dict__", "__cache__", None]
 
 
 ##############################################################################
@@ -62,7 +45,7 @@ class BoundDescriptorBase(BoundClass[BndTo]):
     signatures for ``__get__``.
     """
 
-    store_in: Literal["__dict__", "_attrs_"] | None = "__dict__"
+    store_in: Literal["__dict__", "_attrs_"] | None = field(default="__dict__")
 
     def __post_init__(self) -> None:
         self.__selfref__: BoundClassRef[BndTo] | None

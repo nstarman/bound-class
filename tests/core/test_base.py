@@ -1,9 +1,6 @@
 from weakref import ReferenceType
 
-# THIRD PARTY
 import pytest
-
-# LOCAL
 from bound_class.core.base import BoundClass, BoundClassRef
 
 #####################################################################
@@ -30,8 +27,8 @@ def unbound(bound_cls) -> object:
 
 
 @pytest.fixture()
-def bound(bound_cls, boundto) -> object:
-    bound = bound_cls()  # TODO? necessary
+def bound(unbound, boundto) -> object:
+    bound = copy.deepcopy(unbound)  # TODO? necessary
     bound._set__self__(boundto)
     return bound
 
@@ -72,6 +69,7 @@ def test_delete_connection(unbound, boundto):
     assert unbound.__self__ is boundto  # ensure connected
 
     # Delete and test
+    # del unbound.__self__
     unbound._del__self__()
 
     with pytest.raises(ReferenceError, match="no weakly-referenced object"):
