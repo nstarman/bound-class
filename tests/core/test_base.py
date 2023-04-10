@@ -1,7 +1,6 @@
 from weakref import ReferenceType
 
 import pytest
-
 from bound_class.core.base import BoundClass, BoundClassRef
 
 #####################################################################
@@ -27,10 +26,9 @@ def unbound(bound_cls) -> object:
     return bound_cls()
 
 
-@pytest.fixture
+@pytest.fixture()
 def bound(unbound, boundto) -> object:
     bound = copy.deepcopy(unbound)  # TODO? necessary
-    # bound.__self__ = boundto
     bound._set__self__(boundto)
     return bound
 
@@ -56,7 +54,6 @@ def test_set_connection(unbound, boundto):
         unbound.__self__  # noqa: B018
 
     # Set connection
-    # unbound.__self__ = boundto
     unbound._set__self__(boundto)
 
     # Test new connection
@@ -68,7 +65,6 @@ def test_set_connection(unbound, boundto):
 
 def test_delete_connection(unbound, boundto):
     # Make bond
-    # unbound.__self__ = boundto
     unbound._set__self__(boundto)
     assert unbound.__self__ is boundto  # ensure connected
 
@@ -87,7 +83,6 @@ def test_boundto_deleted(unbound, boundto_cls):
     boundto = boundto_cls()
 
     # Make bond
-    # unbound.__self__ = boundto
     unbound._set__self__(boundto)
     assert unbound.__self__ is boundto  # ensure connected
 
@@ -109,7 +104,6 @@ def test_bound_not_alive_from_reference(bound_cls, boundto):
     """
     # need to make here for proper garbage collection
     bound = bound_cls()
-    # bound.__self__ = boundto
     bound._set__self__(boundto)
 
     boundref = bound.__selfref__  # stays alive

@@ -16,8 +16,6 @@ ABndTo = TypeVar("ABndTo", covariant=True)
 class AccessorLike(Protocol[BndTo]):
     """Protocol for `Accessor`-like classes."""
 
-    # __doc__: str | None  # TODO! https://github.com/mypyc/mypyc/issues/909
-
     def __init__(self, accessee: BndTo) -> None:
         ...
 
@@ -41,7 +39,6 @@ class Accessor(BoundClass[BndTo]):
     """
 
     def __init__(self, accessee: BndTo) -> None:
-        # self.__self__ = accessee
         self._set__self__(accessee)
 
     @property
