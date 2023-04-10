@@ -97,7 +97,7 @@ class BoundClassRef(ReferenceTypeShim[BndTo]):
         bound = self._bound_ref()
         if bound is not None:  # check that reference to bound is alive.
             # del bound.__self__
-            bound._del__self__()
+            bound._del__self__()  # noqa: SLF001
 
 
 class BoundClass(Generic[BndTo]):
