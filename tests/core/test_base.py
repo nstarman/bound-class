@@ -48,13 +48,13 @@ def test_boundto_connection(unbound):
     assert not hasattr(unbound, "__selfref__")
 
     with pytest.raises(ReferenceError, match="no weakly-referenced object"):
-        unbound.__self__
+        unbound.__self__  # noqa: B018
 
 
 def test_set_connection(unbound, boundto):
     # test no current connection
     with pytest.raises(ReferenceError, match="no weakly-referenced object"):
-        unbound.__self__
+        unbound.__self__  # noqa: B018
 
     # Set connection
     unbound._set__self__(boundto)
@@ -75,7 +75,7 @@ def test_delete_connection(unbound, boundto):
     unbound._del__self__()
 
     with pytest.raises(ReferenceError, match="no weakly-referenced object"):
-        unbound.__self__
+        unbound.__self__  # noqa: B018
 
     assert unbound.__selfref__ is None
 
@@ -92,7 +92,7 @@ def test_boundto_deleted(unbound, boundto_cls):
     del boundto
 
     with pytest.raises(ReferenceError, match="no weakly-referenced object"):
-        unbound.__self__
+        unbound.__self__  # noqa: B018
 
     assert unbound.__selfref__ is None
 
@@ -116,6 +116,6 @@ def test_bound_not_alive_from_reference(bound_cls, boundto):
     del bound
 
     with pytest.raises(UnboundLocalError):  # garbage collected
-        bound
+        bound  # noqa: B018
 
     assert boundref._bound_ref() is None

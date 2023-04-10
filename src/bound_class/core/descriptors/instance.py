@@ -143,12 +143,12 @@ class InstanceDescriptor(BoundDescriptorBase[BndTo]):
             elif not isinstance(obj, type(self)):
                 msg = f"descriptor must be type <{type(self)}> not <{type(obj)}>"
                 raise TypeError(msg)
-            else:  # noqa: RET506
+            else:
                 dsc = obj
 
         # We set `__self__` on every call, since if one makes copies of objs,
         # 'dsc' will be copied as well, which will lose the reference.
-        dsc._set__self__(enclosing)
+        dsc._set__self__(enclosing)  # noqa: SLF001
         # TODO? is it faster to check the reference then always make a new one.
 
         return dsc

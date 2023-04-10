@@ -17,7 +17,7 @@ from bound_class.core.descriptors.register import DescriptorRegistrationWarning
 def test_DescriptorRegistrationWarning():
     """Simple test of ``DescriptorRegistrationWarning``."""
     with pytest.warns(DescriptorRegistrationWarning):
-        warnings.warn("test", DescriptorRegistrationWarning)
+        warnings.warn("test", DescriptorRegistrationWarning, stacklevel=2)
 
 
 def test_register_cls():

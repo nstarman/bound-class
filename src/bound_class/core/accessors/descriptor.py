@@ -90,7 +90,7 @@ class AccessorProperty(BoundDescriptorBase[BndTo]):
             elif not isinstance(obj, self.accessor_cls):
                 msg = f"accessor must be type <{type(self)}> not <{type(obj)}>"
                 raise TypeError(msg)
-            else:  # noqa: RET506
+            else:
                 accesssor = obj
 
         return accessor

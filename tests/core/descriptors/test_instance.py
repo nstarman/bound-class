@@ -15,7 +15,7 @@ class Test_InstanceDescriptor(BoundDescriptorBase_Test):
 
     def test___self___on_cls(self, descr_on_cls):
         with pytest.raises(ReferenceError, match="no weakly-referenced object"):
-            descr_on_cls.__self__
+            descr_on_cls.__self__  # noqa: B018
 
     # -------------------------------------------
 
