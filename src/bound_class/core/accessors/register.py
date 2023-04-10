@@ -5,12 +5,10 @@ from __future__ import annotations
 import warnings
 from typing import TYPE_CHECKING, Callable, Literal
 
-# LOCAL
 from bound_class.core.accessors.descriptor import AccessorProperty
 from bound_class.core.descriptors.register import DescriptorRegistrationWarning
 
 if TYPE_CHECKING:
-    # LOCAL
     from bound_class.core.accessors.core import AccessorLike
     from bound_class.core.base import BndTo
 

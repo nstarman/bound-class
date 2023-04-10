@@ -5,29 +5,20 @@
 # 2. clean up shim when py3.9+
 # 3. decide __selfref__ or __self_ref__ or ...
 
-##############################################################################
-# IMPORTS
 
 from __future__ import annotations
 
 import sys
 import weakref
-from typing import Any, Callable, Generic, Protocol, TypeVar
+from typing import TYPE_CHECKING, Any, Callable, Generic, Protocol, TypeVar
 
-__all__ = ["BoundClass", "BoundClassRef"]
+__all__: list[str] = []
 
-##############################################################################
-# PARAMETERS
-
-Self = TypeVar("Self")
-# TODO ``from typing_extensions import Self`` when supported
+if TYPE_CHECKING:
+    Self = TypeVar("Self")
+    # TODO ``from typing_extensions import Self`` when supported
 
 BndTo = TypeVar("BndTo")
-
-
-##############################################################################
-# CODE
-##############################################################################
 
 
 if sys.version_info >= (3, 9):

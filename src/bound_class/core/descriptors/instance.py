@@ -1,23 +1,15 @@
 """Descriptors only on the instance, not the class."""
 
-##############################################################################
-# IMPORTS
 
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
 from typing import Any, MutableMapping, NoReturn, overload
 
-# LOCAL
 from bound_class.core.base import BndTo
 from bound_class.core.descriptors.base import BoundDescriptorBase
 
 __all__: list[str] = []
-
-
-##############################################################################
-# CODE
-##############################################################################
 
 
 @dataclass

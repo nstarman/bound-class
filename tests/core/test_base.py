@@ -2,8 +2,6 @@ from weakref import ReferenceType
 
 # THIRD PARTY
 import pytest
-
-# LOCAL
 from bound_class.core.base import BoundClass, BoundClassRef
 
 #####################################################################

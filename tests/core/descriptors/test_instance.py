@@ -2,7 +2,6 @@
 import pytest
 from bound_class.core.descriptors import InstanceDescriptor
 
-# LOCAL
 from .test_base import BoundDescriptorBase_Test
 
 

@@ -4,8 +4,6 @@ from math import sqrt
 
 # THIRD PARTY
 import pytest
-
-# LOCAL
 from bound_class.core import register_descriptor
 from bound_class.core.descriptors import BoundDescriptor
 from bound_class.core.descriptors.register import DescriptorRegistrationWarning
