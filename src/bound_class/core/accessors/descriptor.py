@@ -5,12 +5,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Literal, MutableMapping, NoReturn, overload
 
-# LOCAL
 from bound_class.core.base import BndTo
 from bound_class.core.descriptors.base import BoundDescriptorBase
 
 if TYPE_CHECKING:
-    # LOCAL
     from bound_class.core.accessors.core import AccessorLike
 
 __all__: list[str] = []

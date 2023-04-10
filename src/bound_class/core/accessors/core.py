@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from typing import Protocol, TypeVar, runtime_checkable
 
-# LOCAL
 from bound_class.core.base import BndTo, BoundClass, BoundClassLike
 
 __all__: list[str] = []

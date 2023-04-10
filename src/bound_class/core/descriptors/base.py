@@ -1,35 +1,14 @@
 """Descriptors on the instance, not the class."""
 
-##############################################################################
-# IMPORTS
 
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, Literal, NoReturn, TypeVar
+from typing import Any, Literal, NoReturn
 
-# LOCAL
 from bound_class.core.base import BndTo, BoundClass, BoundClassRef
 
-if TYPE_CHECKING:
-    # THIRD PARTY
-    from typing_extensions import TypeAlias
-
-
 __all__: list[str] = []
-
-
-##############################################################################
-# PARAMETERS
-
-Self = TypeVar("Self")  # mypy not yet compatible with Self
-
-CacheLoc: TypeAlias = Literal["__dict__", "__cache__", None]
-
-
-##############################################################################
-# CODE
-##############################################################################
 
 
 @dataclass

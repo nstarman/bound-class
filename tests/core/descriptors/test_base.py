@@ -3,8 +3,6 @@ from dataclasses import replace
 
 # THIRD PARTY
 import pytest
-
-# LOCAL
 from bound_class.core.descriptors.base import BoundDescriptorBase
 
 

@@ -6,11 +6,9 @@ import inspect
 import warnings
 from typing import TYPE_CHECKING, Any, Callable
 
-# LOCAL
 from bound_class.core.descriptors.base import BoundDescriptorBase
 
 if TYPE_CHECKING:
-    # LOCAL
     from bound_class.core.base import BndTo
 
 __all__: list[str] = []
