@@ -60,7 +60,7 @@ class BoundClassRef(ReferenceTypeShim[BndTo]):
     __slots__ = ("_bound_ref",)
 
     # `__new__` is needed for type hint tracing because the superclass defines `__new__` without `bound`.
-    def __new__(  # noqa: D102
+    def __new__(
         cls: type[Self],
         ob: BndTo,
         callback: Callable[[weakref.ReferenceType[BndTo]], Any] | None = None,
