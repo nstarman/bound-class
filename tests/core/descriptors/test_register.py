@@ -8,7 +8,7 @@ from bound_class.core import register_descriptor
 from bound_class.core.descriptors import BoundDescriptor
 from bound_class.core.descriptors.register import DescriptorRegistrationWarning
 
-# TODO! add registration tests to ``test_base.py`` so that it applies to both
+# TODO: add registration tests to ``test_base.py`` so that it applies to both
 # ``BoundDescriptor`` and ``InstanceDeescriptor``.
 
 

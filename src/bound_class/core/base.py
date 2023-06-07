@@ -1,6 +1,6 @@
 """Bound classes."""
 
-# TODO!
+# TODO: the following list
 # 1. compile this with mypyc when https://github.com/python/mypy/issues/13231 is resolved
 # 2. clean up shim when py3.9+
 # 3. decide __selfref__ or __self_ref__ or ...
@@ -16,7 +16,7 @@ __all__: list[str] = []
 
 if TYPE_CHECKING:
     Self = TypeVar("Self")
-    # TODO ``from typing_extensions import Self`` when supported
+    # TODO: ``from typing_extensions import Self`` when supported
 
 BndTo = TypeVar("BndTo")
 
@@ -26,7 +26,7 @@ if sys.version_info >= (3, 9):
     class ReferenceTypeShim(weakref.ReferenceType[BndTo]):
         """Python 3.9+ shim for `weakref.ReferenceType`."""
 
-else:  # TODO! remove when py3.9+
+else:  # TODO: remove when py3.9+
 
     class ReferenceTypeShim(weakref.ReferenceType):
         """Python 3.9+ shim for `weakref.ReferenceType`."""
@@ -176,7 +176,7 @@ class BoundClass(Generic[BndTo]):
         msg = "no weakly-referenced object"
         raise ReferenceError(msg)
 
-    # TODO! https://github.com/python/mypy/issues/13231
+    # TODO: https://github.com/python/mypy/issues/13231
     # @__self__.setter
     # def __self__(self, value: BndTo) -> None:
     def _set__self__(self, value: BndTo) -> None:

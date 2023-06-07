@@ -33,7 +33,7 @@ class AccessorProperty(BoundDescriptorBase[BndTo]):
     accessor_cls: type[AccessorLike[BndTo]] | None = None
     store_in: Literal["__dict__", "_attrs_"] | None = "__dict__"
 
-    # TODO! not need this in py3.9 when have improved dataclass
+    # TODO: not need this in py3.9 when have improved dataclass
     def __init__(
         self,
         accessor_cls: type[AccessorLike[BndTo]],
@@ -43,7 +43,7 @@ class AccessorProperty(BoundDescriptorBase[BndTo]):
         object.__setattr__(self, "store_in", store_in)
 
     def __post_init__(self) -> None:
-        # TODO! remove when py3.10+
+        # TODO: remove when py3.10+
         # see https://docs.python.org/3/library/dataclasses.html#re-ordering-of-keyword-only-parameters-in-init
         if self.accessor_cls is None:
             raise TypeError
@@ -67,7 +67,7 @@ class AccessorProperty(BoundDescriptorBase[BndTo]):
         enclosing: BndTo | None,
         _: None | type[BndTo],
     ) -> AccessorLike[BndTo] | type[AccessorLike[BndTo]]:
-        assert self.accessor_cls is not None  # TODO! rm py3.10+  # noqa: S101
+        assert self.accessor_cls is not None  # TODO: rm py3.10+  # noqa: S101
 
         # Opt 1) accessed from the class, so return the accessor class.
         if enclosing is None:
@@ -94,4 +94,4 @@ class AccessorProperty(BoundDescriptorBase[BndTo]):
         return accessor
 
     def __set__(self, _: str, __: object) -> NoReturn:
-        raise AttributeError  # TODO! useful error message
+        raise AttributeError  # TODO: useful error message

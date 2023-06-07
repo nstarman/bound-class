@@ -66,7 +66,7 @@ class BoundDescriptorBase(BoundClass[BndTo]):
 
     def __set__(self, _: str, __: object) -> NoReturn:
         """Raise an error when trying to set the value."""
-        raise AttributeError  # TODO! useful error message
+        raise AttributeError  # TODO: useful error message
 
     # ===============================================================
 

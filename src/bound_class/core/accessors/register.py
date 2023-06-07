@@ -44,7 +44,7 @@ def register_accessor(
     """
 
     def decorator(accessor_cls: type[AccessorLike[BndTo]]) -> type[AccessorLike[BndTo]]:
-        # TODO! validation that ``accessor_cls``
+        # TODO: validation that ``accessor_cls``
 
         if hasattr(cls, name):
             warnings.warn(
