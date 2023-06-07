@@ -100,7 +100,7 @@ def register_descriptor(
         # Make the descriptor instance:
         # opt 1) instantiate class
         if not TYPE_CHECKING and not issubclass(descriptor, BoundDescriptorBase):
-            raise ValueError  # TODO! error message
+            raise ValueError  # TODO: error message
 
         # correctly parse args vs kwargs
         sig = inspect.signature(descriptor.__init__)

@@ -29,7 +29,7 @@ def unbound(bound_cls) -> object:
 
 @pytest.fixture()
 def bound(bound_cls, boundto) -> object:
-    bound = bound_cls()  # TODO? necessary
+    bound = bound_cls()  # TODO: necessary?
     bound._set__self__(boundto)
     return bound
 
