@@ -169,6 +169,9 @@ ignore = [
   "D213",  # Multi-line docstring summary should start at the second line
   "D401",
 
+  # flake8-fixme (FIX)
+  "FIX002",  # Line contains TODO
+
   # flake8-todos (TD)
   "TD002",  # Missing author in TODO
   "TD003",  # Missing issue link on the line following this TODO

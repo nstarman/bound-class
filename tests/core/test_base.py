@@ -114,6 +114,6 @@ def test_bound_not_alive_from_reference(bound_cls, boundto):
     del bound
 
     with pytest.raises(UnboundLocalError):  # garbage collected
-        bound  # noqa: B018
+        bound  # noqa: B018, F821
 
     assert boundref._bound_ref() is None
