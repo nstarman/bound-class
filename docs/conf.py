@@ -1,5 +1,7 @@
 """Sphinx configuration file for the bound_class package."""
 
+from __future__ import annotations
+
 import pathlib
 import sys
 from importlib import import_module
