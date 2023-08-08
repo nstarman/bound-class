@@ -172,6 +172,9 @@ ignore = [
   # flake8-fixme (FIX)
   "FIX002",  # Line contains TODO
 
+  # Pylint (PL)
+  "PLC0105",  # `TypeVar` name does not reflect its covariance;
+
   # flake8-todos (TD)
   "TD002",  # Missing author in TODO
   "TD003",  # Missing issue link on the line following this TODO
