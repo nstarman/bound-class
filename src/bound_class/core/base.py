@@ -119,7 +119,7 @@ class BoundClass(Generic[BndTo]):
 
         >>> ex = Example()
         >>> ex.method
-        <bound method Example.method of <core.base.Example object at ...>>
+        <bound method Example.method of <...Example object at ...>>
 
     ``BoundClass`` allows this to be extended this so that a class can be
     ``bound`` to another class. Remember that ``BoundClass`` is a baseclass, so
@@ -135,7 +135,7 @@ class BoundClass(Generic[BndTo]):
         ...         return bcb
         >>> ex2 = Example2()
         >>> ex2.attribute
-        <core.base.BoundClass object at ...>
+        <...BoundClass object at ...>
         >>> ex2.attribute.__self__ is ex2
         True
 
