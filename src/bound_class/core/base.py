@@ -135,7 +135,7 @@ class BoundClass(Generic[BndTo]):
         ...         return bcb
         >>> ex2 = Example2()
         >>> ex2.attribute
-        <core.base.BoundClass object at ...>
+        <...BoundClass object at ...>
         >>> ex2.attribute.__self__ is ex2
         True
 
