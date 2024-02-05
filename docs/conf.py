@@ -17,6 +17,7 @@ def get_authors(*pkg_names: str) -> set[str]:
     -------
     set[str]
         The authors.
+
     """
     authors: set[str] = set()
     libs = pathlib.Path(__file__).parent.parent / "libs"

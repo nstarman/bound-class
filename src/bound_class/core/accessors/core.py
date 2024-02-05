@@ -16,10 +16,9 @@ ABndTo = TypeVar("ABndTo", covariant=True)
 class AccessorLike(BoundClassLike[BndTo], Protocol):
     """Protocol for `Accessor`-like classes."""
 
-    __doc__: str | None  # noqa: A003
+    __doc__: str | None
 
-    def __init__(self, accessee: BndTo) -> None:
-        ...
+    def __init__(self, accessee: BndTo) -> None: ...
 
     # from BoundClassLike
 
@@ -36,6 +35,7 @@ class Accessor(BoundClass[BndTo]):
     ----------
     accessee : object
         The object to which this object is the accessor.
+
     """
 
     def __init__(self, accessee: BndTo) -> None:

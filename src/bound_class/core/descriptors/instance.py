@@ -1,6 +1,5 @@
 """Descriptors only on the instance, not the class."""
 
-
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
@@ -72,21 +71,22 @@ class InstanceDescriptor(BoundDescriptorBase[BndTo]):
     and place it in the enclosing object's ``__dict__``. Thereafter attribute
     access will return the instance in ``__dict__``, first passing through this
     descriptor to make sure references are kept up-to-date.
+
     """
 
     @overload
-    def __get__(self: InstanceDescriptor[BndTo], enclosing: BndTo, enclosing_cls: None) -> InstanceDescriptor[BndTo]:
-        ...
+    def __get__(
+        self: InstanceDescriptor[BndTo], enclosing: BndTo, enclosing_cls: None,
+    ) -> InstanceDescriptor[BndTo]: ...
 
     @overload
-    def __get__(self: InstanceDescriptor[BndTo], enclosing: None, enclosing_cls: type[BndTo]) -> NoReturn:
-        ...
+    def __get__(self: InstanceDescriptor[BndTo], enclosing: None, enclosing_cls: type[BndTo]) -> NoReturn: ...
 
     def __get__(
         self: InstanceDescriptor[BndTo],
         enclosing: BndTo | None,
         enclosing_cls: type[BndTo] | None,
-    ) -> InstanceDescriptor[BndTo] | NoReturn:
+    ) -> InstanceDescriptor[BndTo]:
         """Return a copy of this descriptor bound to the enclosing object.
 
         Parameters
@@ -110,6 +110,7 @@ class InstanceDescriptor(BoundDescriptorBase[BndTo]):
         TypeError
             If the descriptor stored on the enclosing object is not of the same
             type as this descriptor.
+
         """
         # When called without an instance, return self to allow access
         # to descriptor attributes.

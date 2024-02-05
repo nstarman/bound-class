@@ -1,6 +1,5 @@
 """Descriptors on the instance, not the class."""
 
-
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
@@ -91,15 +90,14 @@ class BoundDescriptor(BoundDescriptorBase[BndTo]):
     --------
     bound_class.descriptors.InstanceDescriptor
         A version of this descriptor that only permits access from the instance.
+
     """
 
     @overload
-    def __get__(self: BoundDescriptor[BndTo], enclosing: BndTo, _: None) -> BoundDescriptor[BndTo]:
-        ...
+    def __get__(self: BoundDescriptor[BndTo], enclosing: BndTo, _: None) -> BoundDescriptor[BndTo]: ...
 
     @overload
-    def __get__(self: BoundDescriptor[BndTo], enclosing: None, _: type[BndTo]) -> BoundDescriptor[BndTo]:
-        ...
+    def __get__(self: BoundDescriptor[BndTo], enclosing: None, _: type[BndTo]) -> BoundDescriptor[BndTo]: ...
 
     def __get__(self: BoundDescriptor[BndTo], enclosing: BndTo | None, _: type[BndTo] | None) -> BoundDescriptor[BndTo]:
         """Return the descriptor bound to the enclosing instance.
@@ -113,6 +111,7 @@ class BoundDescriptor(BoundDescriptorBase[BndTo]):
         Returns
         -------
         BoundDescriptor[BndTo]
+
         """
         # When called without an instance, return self to allow access
         # to descriptor attributes.

@@ -55,6 +55,7 @@ class BoundClassRef(ReferenceTypeShim[BndTo]):
 
         bound object  --> BoundClassRef  --> referent
             ^------- ref <-----|
+
     """
 
     __slots__ = ("_bound_ref",)
@@ -149,6 +150,7 @@ class BoundClass(Generic[BndTo]):
         >>> try: attribute.__self__
         ... except ReferenceError: print("ex2 has been deleted")
         ex2 has been deleted
+
     """
 
     @property
@@ -164,6 +166,7 @@ class BoundClass(Generic[BndTo]):
         `weakref.ReferenceError`
             If no referant was assigned, if it was deleted, or if it was
             de-refenced (e.g. by ``del self.__self__``).
+
         """
         if hasattr(self, "__selfref__") and isinstance(self.__selfref__, BoundClassRef):
             boundto = self.__selfref__()  # dereference
