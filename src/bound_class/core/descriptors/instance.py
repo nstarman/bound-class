@@ -76,7 +76,7 @@ class InstanceDescriptor(BoundDescriptorBase[BndTo]):
 
     @overload
     def __get__(
-        self: InstanceDescriptor[BndTo], enclosing: BndTo, enclosing_cls: None,
+        self: InstanceDescriptor[BndTo], enclosing: BndTo, enclosing_cls: None
     ) -> InstanceDescriptor[BndTo]: ...
 
     @overload
