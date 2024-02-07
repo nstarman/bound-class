@@ -26,6 +26,7 @@ class AccessorProperty(BoundDescriptorBase[BndTo]):
         keyword argument ordering.
     store_in : {"__dict__", "_attrs_"}
         Should be in ``__slots__`` of enclosing object.
+
     """
 
     # See https://github.com/pandas-dev/pandas/blob/main/pandas/_libs/properties.pyx for a CPython implementation
@@ -55,12 +56,10 @@ class AccessorProperty(BoundDescriptorBase[BndTo]):
     # Descriptor
 
     @overload
-    def __get__(self, enclosing: None, _: type[BndTo]) -> type[AccessorLike[BndTo]]:
-        ...
+    def __get__(self, enclosing: None, _: type[BndTo]) -> type[AccessorLike[BndTo]]: ...
 
     @overload
-    def __get__(self, enclosing: BndTo, _: None) -> AccessorLike[BndTo]:
-        ...
+    def __get__(self, enclosing: BndTo, _: None) -> AccessorLike[BndTo]: ...
 
     def __get__(
         self,

@@ -41,6 +41,7 @@ def register_accessor(
     -------
     Callable[[type[AccessorLike[BndTo]]], type[AccessorLike[BndTo]]]
         The decorator.
+
     """
 
     def decorator(accessor_cls: type[AccessorLike[BndTo]]) -> type[AccessorLike[BndTo]]:

@@ -25,6 +25,7 @@ def pytest_configure(config: pytest.Config) -> None:
     ----------
     config : `pytest.Config`
         Pytest configuration.
+
     """
     config.option.astropy_header = True
 

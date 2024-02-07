@@ -67,6 +67,7 @@ def register_descriptor(
         5.0
         >>> v.spherical.theta  # doctest: +FLOAT_CMP
         0.92729
+
     """
 
     def decorator(
@@ -88,6 +89,7 @@ def register_descriptor(
         ------
         ValueError
             If the descriptor is not a `bound_class.descriptors.base.BoundDescriptorBase`
+
         """
         if hasattr(cls, name):
             warnings.warn(

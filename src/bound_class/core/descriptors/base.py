@@ -1,6 +1,5 @@
 """Descriptors on the instance, not the class."""
 
-
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -39,6 +38,7 @@ class BoundDescriptorBase(BoundClass[BndTo]):
     :class:`bound_class.descriptors.BoundDescriptor` and
     :class:`bound_class.descriptors.InstanceDescriptor` do not have matching
     signatures for ``__get__``.
+
     """
 
     store_in: Literal["__dict__", "_attrs_"] | None = "__dict__"
