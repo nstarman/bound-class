@@ -48,7 +48,7 @@ jobs:
           toxargs: '-v --develop'
         - linux: py311-test-cov
         - windows: py310-test-alldeps
-        - macos: py310-test-alldeps
+        # - macos: py310-test-alldeps  # TODO: https://github.com/OpenAstronomy/github-actions-workflows/issues/197
 
       conda: true
       coverage: codecov
