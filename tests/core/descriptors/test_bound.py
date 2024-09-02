@@ -1,12 +1,13 @@
 # THIRD PARTY
 import pytest
+
 from bound_class.core.descriptors import BoundDescriptor
 
 from .test_base import BoundDescriptorBase_Test
 
 
 class Test_BoundDescriptor(BoundDescriptorBase_Test):
-    @pytest.fixture()
+    @pytest.fixture
     def descr_cls(self) -> type:
         return BoundDescriptor
 

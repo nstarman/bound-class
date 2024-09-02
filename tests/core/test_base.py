@@ -2,32 +2,33 @@ from weakref import ReferenceType
 
 # THIRD PARTY
 import pytest
+
 from bound_class.core.base import BoundClass, BoundClassRef
 
 #####################################################################
 
 
-@pytest.fixture()
+@pytest.fixture
 def bound_cls() -> type:
     return BoundClass
 
 
-@pytest.fixture()
+@pytest.fixture
 def boundto_cls() -> type:
     return type("Enclosing", (object,), {})
 
 
-@pytest.fixture()
+@pytest.fixture
 def boundto(boundto_cls) -> object:
     return boundto_cls()
 
 
-@pytest.fixture()
+@pytest.fixture
 def unbound(bound_cls) -> object:
     return bound_cls()
 
 
-@pytest.fixture()
+@pytest.fixture
 def bound(bound_cls, boundto) -> object:
     bound = bound_cls()  # TODO: necessary?
     bound._set__self__(boundto)
