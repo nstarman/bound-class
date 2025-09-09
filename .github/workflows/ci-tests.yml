@@ -42,12 +42,12 @@ jobs:
     uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
     with:
       envs: |
-        - linux: py38-test-cov
-        - linux: py39-test-oldestdeps-alldeps-cov-clocale
-        - linux: py310-test-alldeps
+        - linux: py310-test-cov
+        - linux: py311-test-oldestdeps-alldeps-cov-clocale
+        - linux: py312-test-alldeps
           toxargs: '-v --develop'
-        - linux: py311-test-cov
-        - windows: py310-test-alldeps
+        - linux: py313-test-cov
+        - windows: py312-test-alldeps
         # - macos: py310-test-alldeps  # TODO: https://github.com/OpenAstronomy/github-actions-workflows/issues/197
 
       conda: true
