@@ -18,4 +18,4 @@ jobs:
       if: github.event_name == 'pull_request_target' && github.event.pull_request.user.login != 'meeseeksmachine'
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
-        sync-labels: ''
+        sync-labels: false
